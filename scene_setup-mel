@@ -10,8 +10,8 @@ setAttr __CAM__.useOutlinerColor true; AEdagNodeCommonRefreshOutliners();
 AEoutlinerColorSet __LGT__.outlinerColor;
 AEoutlinerColorSet __GEO__.outlinerColor;
 AEoutlinerColorSet __CAM__.outlinerColor;
-setAttr ("__LGT__.outlinerColor" , 1,1,0);
-setAttr ("__GEO__.outlinerColor" , 0,1,1);
-setAttr ("__CAM__.outlinerColor" , 1,.3,1);
+setAttr ("__LGT__.outlinerColor", 1,1,0);
+setAttr ("__GEO__.outlinerColor", 0,1,1);
+setAttr ("__CAM__.outlinerColor", 1,.3,1);
 
 select -cl;
