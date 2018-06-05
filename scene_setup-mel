@@ -1,3 +1,5 @@
+#either type "import pymel" into the command line, or add it to the start of this script 
+
 CreateEmptyGroup; 
 CreateEmptyGroup; 
 CreateEmptyGroup;
