@@ -1,0 +1,5 @@
+import maya.cmds as cmds
+if cmds.play ( q=True, state=True ):
+    cmds.play ( state=False )
+else:
+    cmds.play ( forward=True )
