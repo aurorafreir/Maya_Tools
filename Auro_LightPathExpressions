@@ -1,0 +1,11 @@
+Trans (all transmission samples through camera)
+    C.*<TS>.*
+
+SubSurf (all subsurface samples through camera)
+    C.*<TD>.*
+
+Spec (all specular samples through camera)
+    C.*<RS>.*
+
+Diff (all diffuse samples through camera)
+    C.*<RD>.*
