@@ -9,3 +9,6 @@ Spec (all specular samples through camera)
 
 Diff (all diffuse samples through camera)
     C.*<RD>.*
+
+Emiss (all emission samples through camera, including lights)
+    C.*O
