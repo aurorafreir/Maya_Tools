@@ -12,3 +12,6 @@ Diff (all diffuse samples through camera)
 
 Emiss (all emission samples through camera, including lights)
     C.*O
+
+Caustics (all caustics samples through camera)
+    CDS.*
