@@ -39,7 +39,8 @@ Aov("Caustics", lpe = "CDS.*<L.>"),
 Aov("Transmission", lpe = "C<TS>.*<L.>"),
 Aov("SubSurf", lpe = "C.*<TD>.*<L.>"),
 Aov("Diffuse", lpe = "C.*<RD>.*<L.>"),
-Aov("Emission", lpe = "C.*O<L.>")
+Aov("Emission", lpe = "C.*O<L.>"),
+Aov("Specular", lpe = " C.*<RS>.*<L.>"),
 ]
 
 def getLights():
