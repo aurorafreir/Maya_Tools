@@ -17,6 +17,8 @@ Caustics (all caustics samples through camera)
     CDS.*
 
 
+(script from an Arvid Schneider video, but has my own LPEs instead of the ones that they use)
+
 ### AUTOWRITE SCRIPT ###
 
 import pymel.core as pmc
