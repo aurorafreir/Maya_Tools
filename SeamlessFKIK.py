@@ -1,3 +1,7 @@
+###mostly from https://bindpose.com/seamless-ik-fk-switch-maya-python/
+###script edited to include my own naming conventions
+###and also to work whether the rig is referenced or not
+
 import maya.cmds as mc
 
 if mc.objExists('*:CTRL_Left_FKIK.IK'):
