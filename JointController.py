@@ -16,7 +16,6 @@ for i in tempSel_JointArray:
     
     #selects child joint and sets it as variable tempSel_AimAt
     tempSel_AimAt = cmds.listRelatives( type='joint')
-    cmds.select(tempSel_jointChild)
     print ("current aim at joint", tempSel_AimAt)
     
     #creates circe NURBS curve and deletes it's history
@@ -56,7 +55,6 @@ for i in tempSel_JointArray:
     
     #selects child joint and sets it as variable tempSel_AimAt
     tempSel_AimAt = cmds.listRelatives( type='joint')
-    cmds.select(tempSel_jointChild)
     print ("current aim at joint", tempSel_AimAt)
     
     #creates square NURBS curve and deletes it's history
