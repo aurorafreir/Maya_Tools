@@ -1,9 +1,10 @@
 #makes a square NURBS controller and parent constraints the joints to the controllers
+#all the print commands are for debugging purposes only
 import maya.cmds as cmds
 
 #makes an array of the selected joints
 tempSel_JointArray = cmds.ls( type=('joint'), sl=True)
-print ("Selected joints", tempSel_JointArray)
+#print ("Selected joints", tempSel_JointArray)
 
 #loops through each joint in tempSel_JointArray
 for i in tempSel_JointArray:
@@ -11,11 +12,11 @@ for i in tempSel_JointArray:
     #selects current joint and sets it as variable tempSel_Parent
     cmds.select(i)
     tempSel_Parent = cmds.ls( sl=True)
-    print ("current parent joint", tempSel_Parent)
+    #print ("current parent joint", tempSel_Parent)
     
     #selects child joint and sets it as variable tempSel_AimAt
     tempSel_AimAt = cmds.listRelatives( type='joint')
-    print ("current aim at joint", tempSel_AimAt)
+    #print ("current aim at joint", tempSel_AimAt)
     
     #creates square NURBS curve and deletes it's history
     cmds.select( d=True );
@@ -37,7 +38,6 @@ for i in tempSel_JointArray:
     cmds.delete( 'tempAimConstraint' + (i));
     
     #parent constrains the joint to the controller
-    #select controller then joint
     cmds.select( 'CTRL_' + (i))
     cmds.select( (i), add=True)
     cmds.parentConstraint( name='parentConstraint_' + (i) + '_CTRL_' + (i))
