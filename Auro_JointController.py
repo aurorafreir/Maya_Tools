@@ -28,10 +28,11 @@ for i in tempSel_jointArray:
     cmds.parentConstraint( tempSel_parent, 'PIVOT_' + i , mo=False, name='tempParentConstraint' + i);
     cmds.delete( 'tempParentConstraint' + (i));
     
-    # Makes aim constraint for controller orientation
-    cmds.aimConstraint( tempSel_aimAt, 'PIVOT_' + i, name='tempAimConstraint' + i);
-    cmds.delete( 'tempAimConstraint' + (i));
-    
+    if len(tempSel_aimAt) == 1:
+        # Makes aim constraint for controller orientation
+        cmds.aimConstraint( tempSel_aimAt, 'PIVOT_' + i, name='tempAimConstraint' + i);
+        cmds.delete( 'tempAimConstraint' + (i));
+
     # Parent constrains the joint to the controller
     cmds.select( 'CTRL_' + i)
     cmds.select( (i), add=True)
