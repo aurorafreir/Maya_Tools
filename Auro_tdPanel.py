@@ -2,15 +2,7 @@ import maya.cmds as cmds
 
 winID = 'aurWindow'
 
-def aurTD_nurbsCircle(self):
-	cmds.circle(name='CircleNURB_#')
-	cmds.bakePartialHistory()
-	
-#def jointController(self):
-	
-def aurTD_nurbsCube(self):
-	cmds.curve( d=1, p=[(-0.5, -0.5, .5), (-0.5, .5, .5), (.5, .5, .5), (.5, -0.5, .5), (.5, -0.5, -0.5), (.5, .5, -0.5), (-0.5, .5, -0.5), (-0.5, -0.5, -0.5), (.5, -0.5, -0.5), (.5, .5, -0.5), (.5, .5, .5), (-0.5, .5, .5), (-0.5, .5, -0.5), (-0.5, -0.5, -0.5), (-0.5, -0.5, .5), (.5, -0.5, .5)], n='NURBS_Cube#');
-
+##RIGGING##
 def aurTD_JointController(self):
 	# Makes a square NURBS controller and parent constraints the joints to the controllers
 	import maya.cmds as cmds
@@ -52,7 +44,42 @@ def aurTD_JointController(self):
 	    cmds.parentConstraint( name='parentConstraint_' + (i) + '_CTRL_' + i)
 	    cmds.select( d=True)
 
+def aurTD_EndJointOrient(self):
+    import maya.cmds as cmds
 
+    tempSel_jointArray = cmds.ls( type=('joint'), sl=True)
+    
+    for i in tempSel_jointArray:
+        
+        cmds.select(i)
+        tempSel_parent = cmds.ls( sl=True)
+        
+        tempSel_child = cmds.listRelatives( type='joint')
+       
+        if not tempSel_child:
+            cmds.joint( edit=True, o=(0,0,0));
+
+
+##CONTROLS##
+def aurTD_nurbsCircle(self):
+	cmds.circle(name='CircleNURB_#')
+	cmds.bakePartialHistory()
+	
+def aurTD_nurbsCube(self):
+	cmds.curve( d=1, p=[(-0.5, -0.5, .5), (-0.5, .5, .5), (.5, .5, .5), (.5, -0.5, .5), (.5, -0.5, -0.5), (.5, .5, -0.5), (-0.5, .5, -0.5), (-0.5, -0.5, -0.5), (.5, -0.5, -0.5), (.5, .5, -0.5), (.5, .5, .5), (-0.5, .5, .5), (-0.5, .5, -0.5), (-0.5, -0.5, -0.5), (-0.5, -0.5, .5), (.5, -0.5, .5)], n='NURBS_Cube#');
+
+
+##RENDERING##
+def aurTD_OCIOoff(self):
+    import maya.cmds as cmds
+    cmds.colorManagementPrefs( e=True, cfe=False );
+    
+def aurTD_OCIOon(self):
+    import maya.cmds as cmds
+    cmds.colorManagementPrefs( e=True, cfe=True );
+
+
+##CREATE WINDOW##
 if cmds.window(winID, exists=True):
 	cmds.deleteUI(winID)
 
@@ -61,6 +88,7 @@ cmds.columnLayout( adjustableColumn=True,  rowSpacing=5, width=200 )
 
 cmds.frameLayout( label='Rigging', labelAlign='top' )
 cmds.button( label = 'Joint Controllers', ann = 'Make a controller for each selected joint', command=aurTD_JointController)
+cmds.button( label = 'End Joint Orient', ann = 'Orient the end joint of each chain correctly', command=aurTD_JointController)
 
 cmds.frameLayout( label='Controls', labelAlign='top' )
 cmds.button( label = 'Nurbs Circle', ann = 'Makes a NURBS circle', command=aurTD_nurbsCircle)
@@ -68,5 +96,8 @@ cmds.button( label = 'Nurbs Cube', ann = 'Makes a NURBS cube', command=aurTD_nur
 
 
 cmds.frameLayout( label='Rendering', labelAlign='top' )
+cmds.button( label = 'OCIO Off', ann = 'Switch to default Maya colour management', command=aurTD_OCIOoff)
+cmds.button( label = 'OCIO On', ann = 'Switch to OCIO colour management', command=aurTD_OCIOon)
+
 
 cmds.showWindow()
