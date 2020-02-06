@@ -5,8 +5,6 @@ winID = 'aurWindow'
 ##RIGGING##
 def aurTD_JointController(self):
 	# Makes a square NURBS controller and parent constraints the joints to the controllers
-	import maya.cmds as cmds
-	
 	# Makes an array of the selected joints
 	tempSel_jointArray = cmds.ls( type=('joint'), sl=True)
 	
@@ -45,8 +43,6 @@ def aurTD_JointController(self):
 	    cmds.select( d=True)
 
 def aurTD_EndJointOrient(self):
-    import maya.cmds as cmds
-
     tempSel_jointArray = cmds.ls( type=('joint'), sl=True)
     
     for i in tempSel_jointArray:
@@ -71,11 +67,9 @@ def aurTD_nurbsCube(self):
 
 ##RENDERING##
 def aurTD_OCIOoff(self):
-    import maya.cmds as cmds
     cmds.colorManagementPrefs( e=True, cfe=False );
     
 def aurTD_OCIOon(self):
-    import maya.cmds as cmds
     cmds.colorManagementPrefs( e=True, cfe=True );
 
 
