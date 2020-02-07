@@ -92,6 +92,7 @@ cmds.button( label = 'Nurbs Cube', ann = 'Makes a NURBS cube', command=aurTD_nur
 cmds.frameLayout( label='Rendering', labelAlign='top' )
 cmds.button( label = 'OCIO Off', ann = 'Switch to default Maya colour management', command=aurTD_OCIOoff)
 cmds.button( label = 'OCIO On', ann = 'Switch to OCIO colour management', command=aurTD_OCIOon)
-
+allowedAreas = ['right', 'left']
+cmds.dockControl( area='left', content=winID, allowedArea=allowedAreas )
 
 cmds.showWindow()
