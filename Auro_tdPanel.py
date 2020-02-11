@@ -71,33 +71,42 @@ def aurTD_OCIOoff(self):
     
 def aurTD_OCIOon(self):
     cmds.colorManagementPrefs( e=True, cfe=True );
+    
+# MODELLING
+def aurTD_SafeDelHistory(self):
+    tempSel_SafeDelHistory = cmds.ls( sl=True)
+    cmds.bakePartialHistory( tempSel_SafeDelHistory,prePostDeformers=True )
 
 
 # CREATE WINDOW
-def main():
-    if cmds.window(winID, exists=True):
-    	cmds.deleteUI(winID)
+#def main():
+if cmds.window(winID, exists=True):
+	cmds.deleteUI(winID)
+
+cmds.window( winID, title = 'Aur TD Window')
+cmds.columnLayout( adjustableColumn=True,  rowSpacing=5, width=200 )
+
+cmds.frameLayout( label='Rigging', labelAlign='top' )
+cmds.button( label = 'Joint Controllers', ann = 'Make a controller for each selected joint', command=aurTD_JointController)
+cmds.button( label = 'End Joint Orient', ann = 'Orient the end joint of each chain correctly', command=aurTD_JointController)
+
+cmds.frameLayout( label='Controls', labelAlign='top' )
+cmds.button( label = 'Nurbs Circle', ann = 'Makes a NURBS circle', command=aurTD_nurbsCircle)
+cmds.button( label = 'Nurbs Cube', ann = 'Makes a NURBS cube', command=aurTD_nurbsCube)
+
+
+cmds.frameLayout( label='Rendering', labelAlign='top' )
+cmds.button( label = 'OCIO Off', ann = 'Switch to default Maya colour management', command=aurTD_OCIOoff)
+cmds.button( label = 'OCIO On', ann = 'Switch to OCIO colour management', command=aurTD_OCIOon)
+
+cmds.frameLayout( label='Modelling', labelAlign='top' )
+cmds.button( label = 'Delete non-deformer history', ann = 'Delete non-deformer history', command=aurTD_SafeDelHistory)
+
+allowedAreas = ['right', 'left']
+cmds.dockControl( "AurTD", area='left',content=winID, allowedArea=allowedAreas )
+
+cmds.showWindow()
     
-    cmds.window( winID, title = 'Aur TD Window')
-    cmds.columnLayout( adjustableColumn=True,  rowSpacing=5, width=200 )
-    
-    cmds.frameLayout( label='Rigging', labelAlign='top' )
-    cmds.button( label = 'Joint Controllers', ann = 'Make a controller for each selected joint', command=aurTD_JointController)
-    cmds.button( label = 'End Joint Orient', ann = 'Orient the end joint of each chain correctly', command=aurTD_JointController)
-    
-    cmds.frameLayout( label='Controls', labelAlign='top' )
-    cmds.button( label = 'Nurbs Circle', ann = 'Makes a NURBS circle', command=aurTD_nurbsCircle)
-    cmds.button( label = 'Nurbs Cube', ann = 'Makes a NURBS cube', command=aurTD_nurbsCube)
-    
-    
-    cmds.frameLayout( label='Rendering', labelAlign='top' )
-    cmds.button( label = 'OCIO Off', ann = 'Switch to default Maya colour management', command=aurTD_OCIOoff)
-    cmds.button( label = 'OCIO On', ann = 'Switch to OCIO colour management', command=aurTD_OCIOon)
-    allowedAreas = ['right', 'left']
-    cmds.dockControl( "AurTD", area='left', content=winID, allowedArea=allowedAreas )
-    
-    cmds.showWindow()
-    
-if __name__=="__main__":
-        cmds.evalDeferred(main())
+#if __name__=="__main__":
+        #cmds.evalDeferred(main())
         
