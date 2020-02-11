@@ -102,8 +102,8 @@ cmds.button( label = 'OCIO On', ann = 'Switch to OCIO colour management', comman
 cmds.frameLayout( label='Modelling', labelAlign='top' )
 cmds.button( label = 'Delete non-deformer history', ann = 'Delete non-deformer history', command=aurTD_SafeDelHistory)
 
-allowedAreas = ['right', 'left']
-cmds.dockControl( "AurTD", area='left',content=winID, allowedArea=allowedAreas )
+#allowedAreas = ['right', 'left']
+#cmds.dockControl( "AurTD", area='left',content=winID, allowedArea=allowedAreas )
 
 cmds.showWindow()
     
