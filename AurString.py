@@ -3,23 +3,26 @@ import maya.cmds as cmds
 selected = cmds.ls(selection=True)
 
 selected_len = (len(selected))
-print selected_len
+#print selected_len
 
 if len(selected) == 2:
+    ### add check for frozen translations
     for item in selected[:1]:
         rPiv = cmds.xform(item, q=True, rp=True)  # query rotation pivot
-        sPiv = cmds.xform(item, q=True, sp=True)  # query scale pivot
+        #sPiv = cmds.xform(item, q=True, sp=True)  # query scale pivot
 
         loc = cmds.spaceLocator(n="wireLocator1")
         cmds.xform(t=rPiv)
 
     for item in selected[1:]:
         rPiv = cmds.xform(item, q=True, rp=True)  # query rotation pivot
-        sPiv = cmds.xform(item, q=True, sp=True)  # query scale pivot
+        #sPiv = cmds.xform(item, q=True, sp=True)  # query scale pivot
 
-        loc = cmds.spaceLocator(n= "wireLocator2")
+        loc = cmds.spaceLocator(n="wireLocator2")
         cmds.xform(t=rPiv)
 
+else:
+    print "Two objects required for string"
 
 #cmds.curve('string_##',)
 
