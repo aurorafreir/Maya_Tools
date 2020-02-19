@@ -71,11 +71,49 @@ def aurTD_OCIOoff(self):
     
 def aurTD_OCIOon(self):
     cmds.colorManagementPrefs( e=True, cfe=True );
+
+def aurTD_EndFrameRange(self):
+	import maya.cmds as cmds
+	endFrame = cmds.playbackOptions(q=True, maxTime=1)
+	cmds.setAttr('defaultRenderGlobals.endFrame', endFrame)
+	print ("set Render Range end frame to " + str(endFrame))
     
 # MODELLING
 def aurTD_SafeDelHistory(self):
     tempSel_SafeDelHistory = cmds.ls( sl=True)
     cmds.bakePartialHistory( tempSel_SafeDelHistory,prePostDeformers=True )
+
+def aurTD_String(self):
+	import maya.cmds as cmds
+
+	selected = cmds.ls(selection=True)
+
+	selected_len = (len(selected))
+	#print selected_len
+
+	if len(selected) == 2:
+		#todo add check for frozen translations
+		for item in selected[:1]:
+			rPiv = cmds.xform(item, q=True, rp=True)  # query rotation pivot
+			#sPiv = cmds.xform(item, q=True, sp=True)  # query scale pivot
+
+			loc = cmds.spaceLocator(n="wireLocator1")
+			cmds.xform(t=rPiv)
+
+		for item in selected[1:]:
+			rPiv = cmds.xform(item, q=True, rp=True)  # query rotation pivot
+			#sPiv = cmds.xform(item, q=True, sp=True)  # query scale pivot
+
+			loc = cmds.spaceLocator(n="wireLocator2")
+			cmds.xform(t=rPiv)
+
+	else:
+		print "Two objects required for string"
+
+	#cmds.curve('string_##',)
+
+	#cmds.delete("wireLocator1")
+	#cmds.delete("wireLocator2")
 
 
 # CREATE WINDOW
@@ -94,13 +132,17 @@ cmds.frameLayout( label='Controls', labelAlign='top' )
 cmds.button( label = 'Nurbs Circle', ann = 'Makes a NURBS circle', command=aurTD_nurbsCircle)
 cmds.button( label = 'Nurbs Cube', ann = 'Makes a NURBS cube', command=aurTD_nurbsCube)
 
-
 cmds.frameLayout( label='Rendering', labelAlign='top' )
 cmds.button( label = 'OCIO Off', ann = 'Switch to default Maya colour management', command=aurTD_OCIOoff)
 cmds.button( label = 'OCIO On', ann = 'Switch to OCIO colour management', command=aurTD_OCIOon)
+cmds.button( label = 'Set Frame End same as Timeline', ann = 'Set the End Frame for rendering to the End Frame of the timeline', command=aurTD_EndFrameRange)
 
 cmds.frameLayout( label='Modelling', labelAlign='top' )
 cmds.button( label = 'Delete non-deformer history', ann = 'Delete non-deformer history', command=aurTD_SafeDelHistory)
+cmds.button( label = 'String _WIP_', ann = 'Make string between two selected objects', command=aurTD_String)
+
+cmds.frameLayout( label='Cameras', labelAlign='top' )
+cmds.button( label = 'Overscan to 1.05', ann = "Set current camera's Overscan to 1.05", command=aurTD_Overscan)
 
 #allowedAreas = ['right', 'left']
 #cmds.dockControl( "AurTD", area='left',content=winID, allowedArea=allowedAreas )
