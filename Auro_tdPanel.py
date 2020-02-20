@@ -1,4 +1,6 @@
 import maya.cmds as cmds
+import maya.OpenMaya as OpenMaya
+import maya.OpenMayaUI as OpenMayaUI
 
 winID = 'aurWindow'
 
@@ -73,19 +75,16 @@ def aurTD_OCIOon(self):
     cmds.colorManagementPrefs( e=True, cfe=True );
 
 def aurTD_EndFrameRange(self):
-	import maya.cmds as cmds
 	endFrame = cmds.playbackOptions(q=True, maxTime=1)
 	cmds.setAttr('defaultRenderGlobals.endFrame', endFrame)
 	print ("set Render Range end frame to " + str(endFrame))
     
 # MODELLING
 def aurTD_SafeDelHistory(self):
-    tempSel_SafeDelHistory = cmds.ls( sl=True)
-    cmds.bakePartialHistory( tempSel_SafeDelHistory,prePostDeformers=True )
+	tempSel_SafeDelHistory = cmds.ls( sl=True)
+	cmds.bakePartialHistory( tempSel_SafeDelHistory,prePostDeformers=True )
 
 def aurTD_String(self):
-	import maya.cmds as cmds
-
 	selected = cmds.ls(selection=True)
 
 	selected_len = (len(selected))
