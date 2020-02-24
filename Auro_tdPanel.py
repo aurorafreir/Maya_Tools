@@ -4,8 +4,10 @@ import maya.OpenMayaUI as OpenMayaUI
 
 winID = 'aurWindow'
 
+#TODO fix variable names to fit PEP8 var conventions
+
 # RIGGING
-def AurTD_JointController(self):
+def AurTDJointController(self):
 	# Makes a square NURBS controller and parent constraints the joints to the controllers
 	# Makes an array of the selected joints
 	tempSel_jointArray = cmds.ls( type=('joint'), sl=True)
