@@ -5,7 +5,7 @@ import maya.OpenMayaUI as OpenMayaUI
 winID = 'aurWindow'
 
 # RIGGING
-def aurTD_JointController(self):
+def AurTD_JointController(self):
 	# Makes a square NURBS controller and parent constraints the joints to the controllers
 	# Makes an array of the selected joints
 	tempSel_jointArray = cmds.ls( type=('joint'), sl=True)
@@ -44,7 +44,7 @@ def aurTD_JointController(self):
 	    cmds.parentConstraint( name='parentConstraint_' + (i) + '_CTRL_' + i)
 	    cmds.select( d=True)
 
-def aurTD_EndJointOrient(self):
+def AurTD_EndJointOrient(self):
     tempSel_jointArray = cmds.ls( type=('joint'), sl=True)
     
     for i in tempSel_jointArray:
@@ -59,32 +59,32 @@ def aurTD_EndJointOrient(self):
 
 
 # CONTROLS
-def aurTD_nurbsCircle(self):
+def AurTD_nurbsCircle(self):
 	cmds.circle(name='CircleNURB_#')
 	cmds.bakePartialHistory()
 	
-def aurTD_nurbsCube(self):
+def AurTD_nurbsCube(self):
 	cmds.curve( d=1, p=[(-0.5, -0.5, .5), (-0.5, .5, .5), (.5, .5, .5), (.5, -0.5, .5), (.5, -0.5, -0.5), (.5, .5, -0.5), (-0.5, .5, -0.5), (-0.5, -0.5, -0.5), (.5, -0.5, -0.5), (.5, .5, -0.5), (.5, .5, .5), (-0.5, .5, .5), (-0.5, .5, -0.5), (-0.5, -0.5, -0.5), (-0.5, -0.5, .5), (.5, -0.5, .5)], n='NURBS_Cube#');
 
 
 # RENDERING
-def aurTD_OCIOoff(self):
+def AurTD_OCIOoff(self):
     cmds.colorManagementPrefs( e=True, cfe=False );
     
-def aurTD_OCIOon(self):
+def AurTD_OCIOon(self):
     cmds.colorManagementPrefs( e=True, cfe=True );
 
-def aurTD_EndFrameRange(self):
+def AurTD_EndFrameRange(self):
 	endFrame = cmds.playbackOptions(q=True, maxTime=1)
 	cmds.setAttr('defaultRenderGlobals.endFrame', endFrame)
 	print ("set Render Range end frame to " + str(endFrame))
     
 # MODELLING
-def aurTD_SafeDelHistory(self):
+def AurTD_SafeDelHistory(self):
 	tempSel_SafeDelHistory = cmds.ls( sl=True)
 	cmds.bakePartialHistory( tempSel_SafeDelHistory,prePostDeformers=True )
 
-def aurTD_String(self):
+def AurTD_String(self):
 	selected = cmds.ls(selection=True)
 
 	selected_len = (len(selected))
@@ -113,7 +113,15 @@ def aurTD_String(self):
 
 	#cmds.delete("wireLocator1")
 	#cmds.delete("wireLocator2")
-
+# CAMERAS
+def AurTD_Overscan(self):
+	if cmds.camera('Shot_0050', q=True, displayResolution=1):
+		view = OpenMayaUI.M3dView.active3dView()
+		cam = OpenMaya.MDagPath()
+		view.getCamera(cam)
+		camPath = cam.fullPathName()
+		cmds.camera(camPath, e=True, overscan=1.05)
+		print ("set current camera's overscan to 1.05")
 
 # CREATE WINDOW
 #def main():
@@ -124,24 +132,24 @@ cmds.window( winID, title = 'Aur TD Window')
 cmds.columnLayout( adjustableColumn=True,  rowSpacing=5, width=200 )
 
 cmds.frameLayout( label='Rigging', labelAlign='top' )
-cmds.button( label = 'Joint Controllers', ann = 'Make a controller for each selected joint', command=aurTD_JointController)
-cmds.button( label = 'End Joint Orient', ann = 'Orient the end joint of each chain correctly', command=aurTD_JointController)
+cmds.button( label = 'Joint Controllers', ann = 'Make a controller for each selected joint', command=AurTD_JointController)
+cmds.button( label = 'End Joint Orient', ann = 'Orient the end joint of each chain correctly', command=AurTD_JointController)
 
 cmds.frameLayout( label='Controls', labelAlign='top' )
-cmds.button( label = 'Nurbs Circle', ann = 'Makes a NURBS circle', command=aurTD_nurbsCircle)
-cmds.button( label = 'Nurbs Cube', ann = 'Makes a NURBS cube', command=aurTD_nurbsCube)
+cmds.button( label = 'Nurbs Circle', ann = 'Makes a NURBS circle', command=AurTD_nurbsCircle)
+cmds.button( label = 'Nurbs Cube', ann = 'Makes a NURBS cube', command=AurTD_nurbsCube)
 
 cmds.frameLayout( label='Rendering', labelAlign='top' )
-cmds.button( label = 'OCIO Off', ann = 'Switch to default Maya colour management', command=aurTD_OCIOoff)
-cmds.button( label = 'OCIO On', ann = 'Switch to OCIO colour management', command=aurTD_OCIOon)
+cmds.button( label = 'OCIO Off', ann = 'Switch to default Maya colour management', command=AurTD_OCIOoff)
+cmds.button( label = 'OCIO On', ann = 'Switch to OCIO colour management', command=AurTD_OCIOon)
 cmds.button( label = 'Set Frame End same as Timeline', ann = 'Set the End Frame for rendering to the End Frame of the timeline', command=aurTD_EndFrameRange)
 
 cmds.frameLayout( label='Modelling', labelAlign='top' )
-cmds.button( label = 'Delete non-deformer history', ann = 'Delete non-deformer history', command=aurTD_SafeDelHistory)
-cmds.button( label = 'String _WIP_', ann = 'Make string between two selected objects', command=aurTD_String)
+cmds.button( label = 'Delete non-deformer history', ann = 'Delete non-deformer history', command=AurTD_SafeDelHistory)
+cmds.button( label = 'String _WIP_', ann = 'Make string between two selected objects', command=AurTD_String)
 
 cmds.frameLayout( label='Cameras', labelAlign='top' )
-cmds.button( label = 'Overscan to 1.05', ann = "Set current camera's Overscan to 1.05", command=aurTD_Overscan)
+cmds.button( label = 'Overscan to 1.05', ann = "Set current camera's Overscan to 1.05", command=AurTD_Overscan)
 
 #allowedAreas = ['right', 'left']
 #cmds.dockControl( "AurTD", area='left',content=winID, allowedArea=allowedAreas )
