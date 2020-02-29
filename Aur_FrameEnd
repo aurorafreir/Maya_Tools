@@ -1,4 +1,0 @@
-import maya.cmds as cmds
-endFrame = cmds.playbackOptions(q=True, maxTime=1)
-cmds.setAttr('defaultRenderGlobals.endFrame', endFrame)
-print ("set Render Range end frame to " + str(endFrame))
