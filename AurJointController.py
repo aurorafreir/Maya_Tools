@@ -2,16 +2,16 @@
 import maya.cmds as cmds
 
 # Makes an array of the selected joints
-tempSel_jointArray = cmds.ls( type=('joint'), sl=True)
+TempSel_JointArray = cmds.ls( type=('joint'), sl=True)
 
-for i in tempSel_jointArray:
+for i in TempSel_JointArray:
     
-    # Selects current joint and sets it as variable tempSel_Parent
+    # Selects current joint and sets it as variable TempSel_Parent
     cmds.select(i)
-    tempSel_parent = cmds.ls( sl=True)
+    TempSel_Parent = cmds.ls( sl=True)
     
     # Selects child joint and sets it as variable tempSel_AimAt
-    tempSel_aimAt = cmds.listRelatives( type='joint')
+    TempSel_AimAt = cmds.listRelatives( type='joint')
     
     # Creates square NURBS curve and deletes it's history
     cmds.select( d=True );
@@ -25,13 +25,13 @@ for i in tempSel_jointArray:
     cmds.parent( 'CTRL_' + (i), 'PIVOT_' + (i));
     
     # Makes parent constraint for controller location
-    cmds.parentConstraint( tempSel_parent, 'PIVOT_' + i , mo=False, name='tempParentConstraint' + i);
-    cmds.delete( 'tempParentConstraint' + (i));
+    cmds.parentConstraint( TempSel_Parent, 'PIVOT_' + i , mo=False, name='TempParentConstraint' + i);
+    cmds.delete( 'TempParentConstraint' + (i));
     
-    if len(tempSel_aimAt) == 1:
+    if len(TempSel_AimAt) == 1:
         # Makes aim constraint for controller orientation
-        cmds.aimConstraint( tempSel_aimAt, 'PIVOT_' + i, name='tempAimConstraint' + i);
-        cmds.delete( 'tempAimConstraint' + (i));
+        cmds.aimConstraint( TempSel_AimAt, 'PIVOT_' + i, name='TempAimConstraint' + i);
+        cmds.delete( 'TempAimConstraint' + (i));
 
     # Parent constrains the joint to the controller
     cmds.select( 'CTRL_' + i)
