@@ -4,7 +4,21 @@ import maya.OpenMayaUI as OpenMayaUI
 
 winID = 'aurWindow'
 
-#TODO fix variable names to fit PEP8 var conventions
+# SCENE
+def AurTDSceneSetup(self):
+	if not cmds.ls("_GEO_"):
+		cmds.group(em=True, n="_GEO_")
+	if not cmds.ls("_LGT_"):
+		cmds.group(em=True, n="_LGT_")
+	if not cmds.ls("_REFS_"):
+		cmds.group(em=True, n="_REFS_")
+
+	cmds.setAttr('_GEO_.useOutlinerColor', True)
+	cmds.setAttr('_GEO_.outlinerColor', .1,.7,.7)
+	cmds.setAttr('_LGT_.useOutlinerColor', True)
+	cmds.setAttr('_LGT_.outlinerColor', .8,.8,.2)
+	cmds.setAttr('_REFS_.useOutlinerColor', True)
+	cmds.setAttr('_REFS_.outlinerColor', .5,.6,.8)
 
 # RIGGING
 def AurTDJointController(self):
@@ -31,7 +45,8 @@ def AurTDJointController(self):
 	    # Makes a group and makes the controller a child of the PIVOT group
 	    cmds.group( em=True, name='PIVOT_' + (i));
 	    cmds.parent( 'CTRL_' + (i), 'PIVOT_' + (i));
-	    
+
+	    #TODO try point constraint
 	    # Makes parent constraint for controller location
 	    cmds.parentConstraint( tempSel_parent, 'PIVOT_' + i , mo=False, name='tempParentConstraint' + i);
 	    cmds.delete( 'tempParentConstraint' + (i));
@@ -46,7 +61,7 @@ def AurTDJointController(self):
 	    cmds.parentConstraint( name='parentConstraint_' + (i) + '_CTRL_' + i)
 	    cmds.select( d=True)
 
-def AurTD_EndJointOrient(self):
+def AurTDEndJointOrient(self):
     tempSel_jointArray = cmds.ls( type=('joint'), sl=True)
     
     for i in tempSel_jointArray:
@@ -61,32 +76,36 @@ def AurTD_EndJointOrient(self):
 
 
 # CONTROLS
-def AurTD_nurbsCircle(self):
+def AurTDnurbsCircle(self):
+	#TODO update to add Pivot group hierarchy
 	cmds.circle(name='CircleNURB_#')
 	cmds.bakePartialHistory()
 	
-def AurTD_nurbsCube(self):
-	cmds.curve( d=1, p=[(-0.5, -0.5, .5), (-0.5, .5, .5), (.5, .5, .5), (.5, -0.5, .5), (.5, -0.5, -0.5), (.5, .5, -0.5), (-0.5, .5, -0.5), (-0.5, -0.5, -0.5), (.5, -0.5, -0.5), (.5, .5, -0.5), (.5, .5, .5), (-0.5, .5, .5), (-0.5, .5, -0.5), (-0.5, -0.5, -0.5), (-0.5, -0.5, .5), (.5, -0.5, .5)], n='NURBS_Cube#');
-
-
+def AurTDnurbsCube(self):
+	cmds.group(em=True, n='PIVOT_Cube')
+	cmds.curve( d=1, p=[(-0.5, -0.5, .5), (-0.5, .5, .5), (.5, .5, .5), (.5, -0.5, .5), (.5, -0.5, -0.5), (.5, .5, -0.5), (-0.5, .5, -0.5), (-0.5, -0.5, -0.5), (.5, -0.5, -0.5), (.5, .5, -0.5), (.5, .5, .5), (-0.5, .5, .5), (-0.5, .5, -0.5), (-0.5, -0.5, -0.5), (-0.5, -0.5, .5), (.5, -0.5, .5)], n='CTRL_Cube');
+	cmds.parent('CTRL_Cube', 'PIVOT_Cube')
+	#cmds.select('CTRL_Cube')
+	cmds.rename('CTRL_Cube', 'CTRL_Cube#')
+	cmds.rename('PIVOT_Cube', 'PIVOT_Cube#')
 # RENDERING
-def AurTD_OCIOoff(self):
+def AurTDOCIOoff(self):
     cmds.colorManagementPrefs( e=True, cfe=False );
     
-def AurTD_OCIOon(self):
+def AurTDOCIOon(self):
     cmds.colorManagementPrefs( e=True, cfe=True );
 
-def AurTD_EndFrameRange(self):
+def AurTDEndFrameRange(self):
 	endFrame = cmds.playbackOptions(q=True, maxTime=1)
 	cmds.setAttr('defaultRenderGlobals.endFrame', endFrame)
 	print ("set Render Range end frame to " + str(endFrame))
     
 # MODELLING
-def AurTD_SafeDelHistory(self):
-	tempSel_SafeDelHistory = cmds.ls( sl=True)
-	cmds.bakePartialHistory( tempSel_SafeDelHistory,prePostDeformers=True )
+def AurTDSafeDelHistory(self):
+    tempSel_SafeDelHistory = cmds.ls( sl=True)
+    cmds.bakePartialHistory( tempSel_SafeDelHistory,prePostDeformers=True )
 
-def AurTD_String(self):
+def AurTDString(self):
 	selected = cmds.ls(selection=True)
 
 	selected_len = (len(selected))
@@ -115,49 +134,64 @@ def AurTD_String(self):
 
 	#cmds.delete("wireLocator1")
 	#cmds.delete("wireLocator2")
+
 # CAMERAS
-def AurTD_Overscan(self):
-	if cmds.camera('Shot_0050', q=True, displayResolution=1):
-		view = OpenMayaUI.M3dView.active3dView()
-		cam = OpenMaya.MDagPath()
-		view.getCamera(cam)
-		camPath = cam.fullPathName()
-		cmds.camera(camPath, e=True, overscan=1.05)
-		print ("set current camera's overscan to 1.05")
+def AurTDOverscan(self):
+	view = OpenMayaUI.M3dView.active3dView()
+	cam = OpenMaya.MDagPath()
+	view.getCamera(cam)
+	camPath = cam.fullPathName()
+	#if cmds.camera(camPath, q=True, displayResolution=1):
+	cmds.camera(camPath, e=True, overscan=1.05)
+	print ("set current camera's overscan to 1.05")
+
+
 
 # CREATE WINDOW
 #def main():
+hv=25
+wv=100
+
 if cmds.window(winID, exists=True):
 	cmds.deleteUI(winID)
 
 cmds.window( winID, title = 'Aur TD Window')
 cmds.columnLayout( adjustableColumn=True,  rowSpacing=5, width=200 )
 
+cmds.frameLayout( label='Scene', labelAlign='top' )
+cmds.button( label = 'Scene Setup', ann = 'Set up scene groups with outliner colours', command=AurTDSceneSetup)
+
+
+
 cmds.frameLayout( label='Rigging', labelAlign='top' )
-cmds.button( label = 'Joint Controllers', ann = 'Make a controller for each selected joint', command=AurTD_JointController)
-cmds.button( label = 'End Joint Orient', ann = 'Orient the end joint of each chain correctly', command=AurTD_JointController)
+cmds.button( label = 'Joint Controllers', ann = 'Make a controller for each selected joint', command=AurTDJointController)
+cmds.button( label = 'End Joint Orient', ann = 'Orient the end joint of each chain correctly', command=AurTDEndJointOrient)
 
 cmds.frameLayout( label='Controls', labelAlign='top' )
-cmds.button( label = 'Nurbs Circle', ann = 'Makes a NURBS circle', command=AurTD_nurbsCircle)
-cmds.button( label = 'Nurbs Cube', ann = 'Makes a NURBS cube', command=AurTD_nurbsCube)
+cmds.button( label = 'Nurbs Circle', ann = 'Makes a NURBS circle', command=AurTDnurbsCircle)
+cmds.button( label = 'Nurbs Cube', ann = 'Makes a NURBS cube', command=AurTDnurbsCube)
 
 cmds.frameLayout( label='Rendering', labelAlign='top' )
-cmds.button( label = 'OCIO Off', ann = 'Switch to default Maya colour management', command=AurTD_OCIOoff)
-cmds.button( label = 'OCIO On', ann = 'Switch to OCIO colour management', command=AurTD_OCIOon)
-cmds.button( label = 'Set Frame End same as Timeline', ann = 'Set the End Frame for rendering to the End Frame of the timeline', command=aurTD_EndFrameRange)
+cmds.rowColumnLayout("uiMenuRow3", numberOfColumns=2, h=hv)
+cmds.button( label = 'OCIO Off', h = hv,w = wv, ann = 'Switch to default Maya colour management', command=AurTDOCIOoff, bgc=[.8,.5,.5])
+cmds.button( label = 'OCIO On', h = hv,w = wv, ann = 'Switch to OCIO colour management', command=AurTDOCIOon, bgc=[.5,.7,.5])
+cmds.setParent('..')
+#cmds.frameLayout()
+#cmds.button( label = 'OCIO Off', ann = 'Switch to default Maya colour management', command=AurTDOCIOoff)
+#cmds.button( label = 'OCIO On', ann = 'Switch to OCIO colour management', command=AurTDOCIOon)
+cmds.button( label = 'Set Frame End same as Timeline', ann = 'Set the End Frame for rendering to the End Frame of the timeline', command=AurTDEndFrameRange)
 
 cmds.frameLayout( label='Modelling', labelAlign='top' )
-cmds.button( label = 'Delete non-deformer history', ann = 'Delete non-deformer history', command=AurTD_SafeDelHistory)
-cmds.button( label = 'String _WIP_', ann = 'Make string between two selected objects', command=AurTD_String)
+cmds.button( label = 'Delete non-deformer history', ann = 'Delete non-deformer history', command=AurTDSafeDelHistory)
+cmds.button( label = 'String _WIP_', ann = 'Make string between two selected objects', command=AurTDString, bgc=[.5,.5,.6])
 
 cmds.frameLayout( label='Cameras', labelAlign='top' )
-cmds.button( label = 'Overscan to 1.05', ann = "Set current camera's Overscan to 1.05", command=AurTD_Overscan)
+cmds.button( label = 'Overscan to 1.05', ann = "Set current camera's Overscan to 1.05", command=AurTDOverscan)
+
+cmds.rowColumnLayout("uiMenuRow", adjustableColumn=True)
+
 
 #allowedAreas = ['right', 'left']
 #cmds.dockControl( "AurTD", area='left',content=winID, allowedArea=allowedAreas )
 
 cmds.showWindow()
-    
-#if __name__=="__main__":
-        #cmds.evalDeferred(main())
-        
