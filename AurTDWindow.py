@@ -4,6 +4,8 @@ import maya.OpenMayaUI as OpenMayaUI
 
 winID = 'aurWindow'
 
+#TEST COMMIT
+
 # SCENE
 def AurTDSceneSetup(self):
 	if not cmds.ls("_GEO_"):
