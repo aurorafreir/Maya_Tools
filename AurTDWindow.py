@@ -21,6 +21,35 @@ def AurTDSceneSetup(self):
 	cmds.setAttr('_REFS_.outlinerColor', .5,.6,.8)
 
 # RIGGING
+def AurTDBlendshapeOriginal(self):
+
+	SelectedObj = cmds.ls(sl=True, sn=True)
+
+	if SelectedObj:
+		#get material
+		SelectedObj = cmds.ls(sl = True, dag = True, s = True)
+		shadeEng = cmds.listConnections(SelectedObj , type="shadingEngine")
+		SelectedObjMaterial = cmds.ls(cmds.listConnections(shadeEng ), materials = True)
+		print SelectedObjMaterial[0]
+		#duplicate object and switch it to original shape node
+		cmds.duplicate(n="{}Blendshape".format(SelectedObj[0]))
+		cmds.setAttr("{}BlendshapeShapeOrig.intermediateObject".format(SelectedObj[0]), 0)
+		cmds.delete("{}BlendshapeShape".format(SelectedObj[0]))
+		#assign material
+		cmds.select('{}Blendshape'.format(SelectedObj[0]))
+		cmds.select(SelectedObjMaterial[0], add=True)
+		SelectedObjShaderGroup = cmds.listConnections(SelectedObjMaterial[0])
+		print SelectedObjShaderGroup[0]
+		cmds.hyperShade( assign='aiStandardSurface1SG')
+		#unlock translate attrs
+		axis = ['X', 'Y', 'Z']
+		attrs = ['translate', 'rotate', 'scale']
+		for ax in axis:
+			for attr in attrs:
+				cmds.setAttr('{}Blendshape'.format(SelectedObj[0])+'.'+attr+ax, lock=0)
+
+
+
 def AurTDJointController(self):
 	# Makes a square NURBS controller and parent constraints the joints to the controllers
 	# Makes an array of the selected joints
@@ -164,6 +193,7 @@ cmds.button( label = 'Scene Setup', ann = 'Set up scene groups with outliner col
 
 
 cmds.frameLayout( label='Rigging', labelAlign='top' )
+cmds.button( label = 'Original Blendshape', ann = 'Get the original shape without blendshapes or joint deformation', command=AurTDBlendshapeOriginal)
 cmds.button( label = 'Joint Controllers', ann = 'Make a controller for each selected joint', command=AurTDJointController)
 cmds.button( label = 'End Joint Orient', ann = 'Orient the end joint of each chain correctly', command=AurTDEndJointOrient)
 
