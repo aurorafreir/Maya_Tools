@@ -24,3 +24,5 @@ if SelectedObj:
     for ax in axis:
         for attr in attrs:
            cmds.setAttr('{}Blendshape'.format(SelectedObj[0])+'.'+attr+ax, lock=0)
+
+test commit
