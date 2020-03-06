@@ -190,9 +190,7 @@ cmds.columnLayout( adjustableColumn=True,  rowSpacing=5, width=200 )
 cmds.frameLayout( label='Scene', labelAlign='top' )
 cmds.button( label = 'Scene Setup', ann = 'Set up scene groups with outliner colours', command=AurTDSceneSetup)
 
-
-
-cmds.frameLayout( label='Rigging', labelAlign='top' )
+cmds.frameLayout( label='Rigging', labelAlign='top')
 cmds.button( label = 'Original Blendshape', ann = 'Get the original shape without blendshapes or joint deformation', command=AurTDBlendshapeOriginal)
 cmds.button( label = 'Joint Controllers', ann = 'Make a controller for each selected joint', command=AurTDJointController)
 cmds.button( label = 'End Joint Orient', ann = 'Orient the end joint of each chain correctly', command=AurTDEndJointOrient)
