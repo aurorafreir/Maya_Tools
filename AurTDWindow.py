@@ -174,7 +174,19 @@ def AurTDOverscan(self):
 	cmds.camera(camPath, e=True, overscan=1.05)
 	print ("set current camera's overscan to 1.05")
 
-
+def AurTDSingleFramePlayblast(self):
+	#gets current frame
+	CurrentFrame = cmds.currentTime(q=True)
+	#gets current render format, and sets image format to jpg
+	CurrentImageFormat = cmds.getAttr("defaultRenderGlobals.imageFormat")
+	cmds.setAttr("defaultRenderGlobals.imageFormat", 8) # *.jpg
+	#gets current render resolution
+	RenderWidth = cmds.getAttr("defaultResolution.width")
+	RenderHeight= cmds.getAttr("defaultResolution.height")
+	#starts playblast for current frame, as jpeg, at render resolution, without ornaments
+	cmds.playblast(frame=CurrentFrame, format="image", p=100, width=RenderWidth, height=RenderHeight, qlt=95, orn=False)
+	#sets render format back to previous
+	cmds.setAttr("defaultRenderGlobals.imageFormat", CurrentImageFormat)
 
 # CREATE WINDOW
 #def main():
@@ -204,9 +216,7 @@ cmds.rowColumnLayout("uiMenuRow3", numberOfColumns=2, h=hv)
 cmds.button( label = 'OCIO Off', h = hv,w = wv, ann = 'Switch to default Maya colour management', command=AurTDOCIOoff, bgc=[.8,.5,.5])
 cmds.button( label = 'OCIO On', h = hv,w = wv, ann = 'Switch to OCIO colour management', command=AurTDOCIOon, bgc=[.5,.7,.5])
 cmds.setParent('..')
-#cmds.frameLayout()
-#cmds.button( label = 'OCIO Off', ann = 'Switch to default Maya colour management', command=AurTDOCIOoff)
-#cmds.button( label = 'OCIO On', ann = 'Switch to OCIO colour management', command=AurTDOCIOon)
+
 cmds.button( label = 'Set Frame End same as Timeline', ann = 'Set the End Frame for rendering to the End Frame of the timeline', command=AurTDEndFrameRange)
 
 cmds.frameLayout( label='Modelling', labelAlign='top' )
@@ -215,11 +225,8 @@ cmds.button( label = 'String _WIP_', ann = 'Make string between two selected obj
 
 cmds.frameLayout( label='Cameras', labelAlign='top' )
 cmds.button( label = 'Overscan to 1.05', ann = "Set current camera's Overscan to 1.05", command=AurTDOverscan)
+cmds.button( label = 'Playblast single frame', ann = "Playblasts a single frame as a jpg at the render resolution", command=AurTDSingleFramePlayblast)
 
 cmds.rowColumnLayout("uiMenuRow", adjustableColumn=True)
-
-
-#allowedAreas = ['right', 'left']
-#cmds.dockControl( "AurTD", area='left',content=winID, allowedArea=allowedAreas )
 
 cmds.showWindow()
