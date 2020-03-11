@@ -206,21 +206,18 @@ def AurTDSingleFramePlayblast(self):
 		cmds.camera(CurrentCam, e=True, overscan=1.00)
 
 	#check what vers was last
-	CurrentVersCheck = 100
-	while CurrentVersCheck > 0:
-		CurrentVersCheck-=1
-		#    print CurrentVersCheck
-		if cmds.file("images/{}_v{}.jpg".format(CurrentCam, str(CurrentVersCheck).zfill(2)), exists=True, q=True):
-			file = "images/{}_v{}.jpg".format(CurrentCam, str(CurrentVersCheck).zfill(2))
-			print file
+	CurrentVersCheck = 0
+	while cmds.file("images/{}_v{}.jpg".format(CurrentCam, str(CurrentVersCheck).zfill(2)), exists=True, q=True):
+		print CurrentVersCheck
+		CurrentVersCheck+=1
+
+		if not cmds.file("images/{}_v{}.jpg".format(CurrentCam, str(CurrentVersCheck).zfill(2)), exists=True, q=True):
 			break
-	CurrentVers = CurrentVersCheck + 1
-	print CurrentVers
 
 	#starts playblast for current frame, as jpeg, at render resolution, without ornaments
 	cmds.playblast(
 		frame=CurrentFrame,
-		f="{}_v{}".format(CurrentCam, str(CurrentVers).zfill(2)),
+		f="{}_v{}".format(CurrentCam, str(CurrentVersCheck).zfill(2)),
 		fmt="image",
 		p=100,
 		width=RenderWidth,
@@ -234,13 +231,14 @@ def AurTDSingleFramePlayblast(self):
 	CurrentProj = cmds.workspace(active=True, q=True)
 	os.chdir("{}".format(CurrentProj))
 	os.rename(
-		"images/{}_v{}".format(CurrentCam, str(CurrentVers).zfill(2)) + ".0000.jpg",
-		"images/{}_v{}".format(CurrentCam, str(CurrentVers).zfill(2)) + ".jpg")
+		"images/{}_v{}".format(CurrentCam, str(CurrentVersCheck).zfill(2)) + ".0000.jpg",
+		"images/{}_v{}".format(CurrentCam, str(CurrentVersCheck).zfill(2)) + ".jpg")
 
 	#turn film gate back on if it was on
 	if FilmGateOn:
 		cmds.camera(CurrentCam, dr=True, e=True)
 		cmds.camera(CurrentCam, e=True, overscan=FilmGateOverscan)
+
 
 # CREATE WINDOW
 #def main():
