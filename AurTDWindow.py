@@ -1,7 +1,3 @@
-
-
-
-
 import maya.cmds as cmds
 import maya.OpenMaya as OpenMaya
 import maya.OpenMayaUI as OpenMayaUI
