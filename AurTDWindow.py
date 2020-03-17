@@ -268,12 +268,14 @@ cmds.columnLayout(adjustableColumn=True, rowSpacing=5, width=200)
 
 cmds.frameLayout(label='Scene', labelAlign='top')
 cmds.button(label='Scene Setup', ann='Set up scene groups with Outliner colours', command=AurTDSceneSetup)
-cmds.button(label='Scene Setup PY', ann='Set up scene groups with Outliner colours', command=AurTDSceneSetupPY)
+cmds.button(label='Scene Setup PY _BROKEN_', ann='Set up scene groups with Outliner colours', command=AurTDSceneSetupPY,
+            bgc=[.5, .5, .6])
 
 cmds.frameLayout(label='Rigging', labelAlign='top')
 cmds.button(label='Original Blendshape', ann='Get the original shape without blendshapes or joint deformation',
             command=AurTDBlendshapeOriginal)
-cmds.button(label='Joint Controllers', ann='Make a controller for each selected joint', command=AurTDJointController)
+cmds.button(label='Joint Controllers _BROKEN_', ann='Make a controller for each selected joint',
+            command=AurTDJointController, bgc=[.5, .5, .6])
 cmds.button(label='End Joint Orient', ann='Orient the end joint of each chain correctly', command=AurTDEndJointOrient)
 
 cmds.frameLayout(label='Controls', labelAlign='top')
