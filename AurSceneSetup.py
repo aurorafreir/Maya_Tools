@@ -9,6 +9,7 @@ if not cmds.ls("_REFS_"):
 if not cmds.ls("_CAMS_"):
     cmds.group(em=True, n="_CAMS_")
 
+
 cmds.setAttr('_GEO_.useOutlinerColor', True)
 cmds.setAttr('_GEO_.outlinerColor', .1,.7,.7)
 cmds.setAttr('_LGT_.useOutlinerColor', True)

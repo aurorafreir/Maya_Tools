@@ -14,13 +14,19 @@ def AurTDSceneSetup(self):
         cmds.group(em=True, n="_LGT_")
     if not cmds.ls("_REFS_"):
         cmds.group(em=True, n="_REFS_")
+    if not cmds.ls("_CAMS_"):
+        cmds.group(em=True, n="_CAMS_")
+
 
     cmds.setAttr('_GEO_.useOutlinerColor', True)
-    cmds.setAttr('_GEO_.outlinerColor', .1, .7, .7)
+    cmds.setAttr('_GEO_.outlinerColor', .1,.7,.7)
     cmds.setAttr('_LGT_.useOutlinerColor', True)
-    cmds.setAttr('_LGT_.outlinerColor', .8, .8, .2)
+    cmds.setAttr('_LGT_.outlinerColor', .8,.8,.2)
     cmds.setAttr('_REFS_.useOutlinerColor', True)
-    cmds.setAttr('_REFS_.outlinerColor', .5, .6, .8)
+    cmds.setAttr('_REFS_.outlinerColor', .5,.6,.8)
+    cmds.setAttr('_CAMS_.useOutlinerColor', True)
+    cmds.setAttr('_CAMS_.outlinerColor', .6,.8,.4)
+
 
 
 def AurTDSceneSetupPY(self):
@@ -175,11 +181,10 @@ def AurTDString(self):
     else:
         print "Two objects required for string"
 
+    # cmds.curve('string_##',)
 
-# cmds.curve('string_##',)
-
-# cmds.delete("wireLocator1")
-# cmds.delete("wireLocator2")
+    # cmds.delete("wireLocator1")
+    # cmds.delete("wireLocator2")
 
 # CAMERAS
 def AurTDOverscan(self):
@@ -193,43 +198,45 @@ def AurTDOverscan(self):
 
 
 def AurTDSingleFramePlayblast(self):
-    # gets current frame
+    #gets current frame
     CurrentFrame = cmds.currentTime(q=True)
 
-    # gets current render format, and sets image format to jpg
+    #gets current render format, and sets image format to jpg
     CurrentImageFormat = cmds.getAttr("defaultRenderGlobals.imageFormat")
-    cmds.setAttr("defaultRenderGlobals.imageFormat", 8)  # *.jpg
+    cmds.setAttr("defaultRenderGlobals.imageFormat", 8) # *.jpg
 
-    # gets current render resolution
+    #gets current render resolution
     RenderWidth = cmds.getAttr("defaultResolution.width")
-    RenderHeight = cmds.getAttr("defaultResolution.height")
+    RenderHeight= cmds.getAttr("defaultResolution.height")
 
-    # get current camera name
+    #get current camera name
     view = OpenMayaUI.M3dView.active3dView()
     cam = OpenMaya.MDagPath()
     view.getCamera(cam)
     camPath = cam.fullPathName()
     cmds.select(camPath)
-    currentCamLong = cmds.ls(sl=True, long=False) or []
-    CurrentCam = str(currentCamLong[0])[:-5]
+    currentCamLong = cmds.ls(sl=True,long=False) or []
+    cmds.select(currentCamLong[0])
+    CurrentCam = cmds.listRelatives(parent=True)[0]
+    print CurrentCam
 
-    # check if film gate is on
+    #check if film gate is on
     if cmds.camera(CurrentCam, dr=True, q=True):
         FilmGateOverscan = cmds.camera(CurrentCam, q=True, overscan=1)
         FilmGateOn = True
         cmds.camera(CurrentCam, dr=False, e=True)
         cmds.camera(CurrentCam, e=True, overscan=1.00)
 
-    # check what version was last
+    #check what vers was last
     CurrentVersCheck = 0
     while cmds.file("images/{}_v{}.jpg".format(CurrentCam, str(CurrentVersCheck).zfill(2)), exists=True, q=True):
         print CurrentVersCheck
-        CurrentVersCheck += 1
+        CurrentVersCheck+=1
 
         if not cmds.file("images/{}_v{}.jpg".format(CurrentCam, str(CurrentVersCheck).zfill(2)), exists=True, q=True):
             break
 
-    # starts playblast for current frame, as jpeg, at render resolution, without ornaments
+    #starts playblast for current frame, as jpeg, at render resolution, without ornaments
     cmds.playblast(
         frame=CurrentFrame,
         f="{}_v{}".format(CurrentCam, str(CurrentVersCheck).zfill(2)),
@@ -239,17 +246,17 @@ def AurTDSingleFramePlayblast(self):
         height=RenderHeight,
         qlt=95,
         orn=False)
-    # sets render format back to previous
+    #sets render format back to previous
     cmds.setAttr("defaultRenderGlobals.imageFormat", CurrentImageFormat)
 
-    # rename file to remove ".0000"
+    #rename file to remove ".0000"
     CurrentProj = cmds.workspace(active=True, q=True)
     os.chdir("{}".format(CurrentProj))
     os.rename(
         "images/{}_v{}".format(CurrentCam, str(CurrentVersCheck).zfill(2)) + ".0000.jpg",
         "images/{}_v{}".format(CurrentCam, str(CurrentVersCheck).zfill(2)) + ".jpg")
 
-    # turn film gate back on if it was on
+    #turn film gate back on if it was on
     if FilmGateOn:
         cmds.camera(CurrentCam, dr=True, e=True)
         cmds.camera(CurrentCam, e=True, overscan=FilmGateOverscan)

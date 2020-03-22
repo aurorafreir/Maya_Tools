@@ -21,7 +21,9 @@ view.getCamera(cam)
 camPath = cam.fullPathName()
 cmds.select(camPath)
 currentCamLong = cmds.ls(sl=True,long=False) or []
-CurrentCam = str(currentCamLong[0])[:-5]
+cmds.select(currentCamLong[0])
+CurrentCam = cmds.listRelatives(parent=True)[0]
+print CurrentCam
 
 #check if film gate is on
 if cmds.camera(CurrentCam, dr=True, q=True):
