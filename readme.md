@@ -9,8 +9,6 @@
 
 **Mirror selected blendshapes**: not started
 
-**Flood weight of solo'd items to selected joint**: not started
-
 **Controller Script**: broken
 
 ### Rendering
