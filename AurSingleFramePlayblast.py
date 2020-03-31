@@ -60,8 +60,3 @@ os.chdir("{}".format(CurrentProj))
 os.rename(
     "images/{}_v{}".format(CurrentCam, str(CurrentVersCheck).zfill(2)) + ".0000.jpg",
     "images/{}_v{}".format(CurrentCam, str(CurrentVersCheck).zfill(2)) + ".jpg")
-
-#turn film gate back on if it was on
-if FilmGateOn:
-    cmds.camera(CurrentCam, dr=True, e=True)
-    cmds.camera(CurrentCam, e=True, overscan=FilmGateOverscan)
