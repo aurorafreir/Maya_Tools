@@ -1,15 +1,13 @@
 # Maya Scripts
 
 ### Scene
-**Save a new version**: working
+**Save a new version**: not started
 
 
 ### Rigging
 **Get original Blendshape**: Finished
 
 **Mirror selected blendshapes**: not started
-
-**Flood weight of solo'd items to selected joint**: not started
 
 **Controller Script**: broken
 
