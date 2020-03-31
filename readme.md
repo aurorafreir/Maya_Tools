@@ -3,7 +3,7 @@
 ### Scene
 **Save a new version**: not started
 
-**Reload as Reference**: Working
+**Reload as Reference**: Working, still WIP (doesn't acknowledge hierarchy yet)
 
 
 ### Rigging
