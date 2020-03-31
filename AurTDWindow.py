@@ -2,6 +2,7 @@ import maya.cmds as cmds
 import maya.OpenMaya as OpenMaya
 import maya.OpenMayaUI as OpenMayaUI
 import os
+from shutil import move
 
 winID = 'aurWindow'
 
@@ -31,6 +32,26 @@ def AurTDSceneSetup(self):
 
 def AurTDSceneSetupPY(self):
     import AurSceneSetup
+
+def AurReloadAsReference(self):
+    CurrentProj = cmds.workspace(active=True, q=True)
+    os.chdir("{}".format(CurrentProj))
+
+    filepath = cmds.file(q=True, sn=True)
+    filename = os.path.basename(filepath)
+
+    if cmds.ls(sl=True):
+        SelectedObjs = cmds.ls(sl=True)[0]
+        cmds.file(rename=SelectedObjs)
+        cmds.file(save=True)
+        cmds.file(rename=filename)
+
+        move(
+            "{}/scenes/{}.ma".format(CurrentProj, SelectedObjs),
+            "{}/assets/{}.ma".format(CurrentProj, SelectedObjs))
+
+        cmds.file("{}/assets/{}.ma".format(CurrentProj, SelectedObjs), reference=True)
+        cmds.delete(SelectedObjs)
 
 
 # RIGGING
@@ -256,12 +277,6 @@ def AurTDSingleFramePlayblast(self):
         "images/{}_v{}".format(CurrentCam, str(CurrentVersCheck).zfill(2)) + ".0000.jpg",
         "images/{}_v{}".format(CurrentCam, str(CurrentVersCheck).zfill(2)) + ".jpg")
 
-    #turn film gate back on if it was on
-    if FilmGateOn:
-        cmds.camera(CurrentCam, dr=True, e=True)
-        cmds.camera(CurrentCam, e=True, overscan=FilmGateOverscan)
-
-
 # CREATE WINDOW
 # def main():
 hv = 25
@@ -273,10 +288,11 @@ if cmds.window(winID, exists=True):
 cmds.window(winID, title='Aur TD Window')
 cmds.columnLayout(adjustableColumn=True, rowSpacing=5, width=200)
 
-cmds.frameLayout(label='Scene', labelAlign='top')
+cmds.frameLayout(label='Scene/Layout', labelAlign='top')
 cmds.button(label='Scene Setup', ann='Set up scene groups with Outliner colours', command=AurTDSceneSetup)
 cmds.button(label='Scene Setup PY _BROKEN_', ann='Set up scene groups with Outliner colours', command=AurTDSceneSetupPY,
             bgc=[.5, .5, .6])
+cmds.button(label='Reload as Reference', ann='', command=AurReloadAsReference)
 
 cmds.frameLayout(label='Rigging', labelAlign='top')
 cmds.button(label='Original Blendshape', ann='Get the original shape without blendshapes or joint deformation',
