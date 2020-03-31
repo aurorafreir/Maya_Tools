@@ -3,6 +3,8 @@
 ### Scene
 **Save a new version**: not started
 
+**Reload as Reference**: Working
+
 
 ### Rigging
 **Get original Blendshape**: Finished
