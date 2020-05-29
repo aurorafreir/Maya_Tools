@@ -28,7 +28,7 @@ for i in TempSel_JointArray:
     cmds.parentConstraint( TempSel_Parent, 'PIVOT_' + i , mo=False, name='TempParentConstraint' + i);
     cmds.delete( 'TempParentConstraint' + (i));
     if not TempSel_AimAt:
-        print "no child joint, skipping rotation"
+        print "no child joint of {}, skipping rotation".format(i)
     elif len(TempSel_AimAt) == 1:
         # Makes aim constraint for controller orientation
         cmds.aimConstraint( TempSel_AimAt, 'PIVOT_' + i, name='TempAimConstraint' + i);
