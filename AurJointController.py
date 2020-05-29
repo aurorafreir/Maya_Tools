@@ -2,7 +2,7 @@
 import maya.cmds as cmds
 
 # Makes an array of the selected joints
-TempSel_JointArray = cmds.ls( type=('joint'), sl=True)
+TempSel_JointArray = cmds.ls( type=('joint'), sl=True, flatten=True)
 
 for i in TempSel_JointArray:
     
@@ -27,8 +27,9 @@ for i in TempSel_JointArray:
     # Makes parent constraint for controller location
     cmds.parentConstraint( TempSel_Parent, 'PIVOT_' + i , mo=False, name='TempParentConstraint' + i);
     cmds.delete( 'TempParentConstraint' + (i));
-    
-    if len(TempSel_AimAt) == 1:
+    if not TempSel_AimAt:
+        print "no child joint, skipping rotation"
+    elif len(TempSel_AimAt) == 1:
         # Makes aim constraint for controller orientation
         cmds.aimConstraint( TempSel_AimAt, 'PIVOT_' + i, name='TempAimConstraint' + i);
         cmds.delete( 'TempAimConstraint' + (i));
@@ -38,3 +39,4 @@ for i in TempSel_JointArray:
     cmds.select( (i), add=True)
     cmds.parentConstraint( name='parentConstraint_' + (i) + '_CTRL_' + i)
     cmds.select( d=True)
+    
