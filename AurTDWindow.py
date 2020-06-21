@@ -138,10 +138,11 @@ def AurTDEndJointOrient(self):
 
 # CONTROLS
 def AurTDnurbsCircle(self):
-    # TODO update to add Pivot group hierarchy
-    cmds.circle(name='CircleNURB_#')
+    cmds.group(em=True, n='PIVOT_Circle')
+    cmds.circle(name='CTRL_Circle')
+    cmds.parent('CTRL_Circle', 'PIVOT_Circle')
     cmds.bakePartialHistory()
-
+    cmds.select('PIVOT_Circle')
 
 def AurTDnurbsCube(self):
     cmds.group(em=True, n='PIVOT_Cube')
@@ -152,7 +153,27 @@ def AurTDnurbsCube(self):
     cmds.parent('CTRL_Cube', 'PIVOT_Cube')
     # cmds.select('CTRL_Cube')
     cmds.rename('CTRL_Cube', 'CTRL_Cube#')
+    cmds.select('PIVOT_Cube')
     cmds.rename('PIVOT_Cube', 'PIVOT_Cube#')
+
+
+def SetNurbsColorRed(self):
+    ctrl = cmds.ls(sl=True)
+    for i in ctrl:
+        cmds.setAttr(i + ".overrideEnabled", 1)
+        cmds.setAttr(i + ".overrideColor", 13)
+
+def SetNurbsColorYellow(self):
+    ctrl = cmds.ls(sl=True)
+    for i in ctrl:
+        cmds.setAttr(i + ".overrideEnabled", 1)
+        cmds.setAttr(i + ".overrideColor", 17)
+
+def SetNurbsColorBlue(self):
+    ctrl = cmds.ls(sl=True)
+    for i in ctrl:
+        cmds.setAttr(i + ".overrideEnabled", 1)
+        cmds.setAttr(i + ".overrideColor", 18)
 
 
 # RENDERING
@@ -175,37 +196,6 @@ def AurTDEndFrameRange(self):
 def AurTDSafeDelHistory(self):
     tempSel_SafeDelHistory = cmds.ls(sl=True)
     cmds.bakePartialHistory(tempSel_SafeDelHistory, prePostDeformers=True)
-
-
-def AurTDString(self):
-    selected = cmds.ls(selection=True)
-
-    selected_len = (len(selected))
-    # print selected_len
-
-    if len(selected) == 2:
-        # todo add check for frozen translations
-        for item in selected[:1]:
-            rPiv = cmds.xform(item, q=True, rp=True)  # query rotation pivot
-            # sPiv = cmds.xform(item, q=True, sp=True)  # query scale pivot
-
-            loc = cmds.spaceLocator(n="wireLocator1")
-            cmds.xform(t=rPiv)
-
-        for item in selected[1:]:
-            rPiv = cmds.xform(item, q=True, rp=True)  # query rotation pivot
-            # sPiv = cmds.xform(item, q=True, sp=True)  # query scale pivot
-
-            loc = cmds.spaceLocator(n="wireLocator2")
-            cmds.xform(t=rPiv)
-
-    else:
-        print "Two objects required for string"
-
-    # cmds.curve('string_##',)
-
-    # cmds.delete("wireLocator1")
-    # cmds.delete("wireLocator2")
 
 # CAMERAS
 def AurTDOverscan(self):
@@ -285,7 +275,7 @@ wv = 100
 if cmds.window(winID, exists=True):
     cmds.deleteUI(winID)
 
-cmds.window(winID, title='Aur TD Window')
+cmds.window(winID, title='Control Panel')
 cmds.columnLayout(adjustableColumn=True, rowSpacing=5, width=200)
 
 cmds.frameLayout(label='Scene/Layout', labelAlign='top')
@@ -304,6 +294,12 @@ cmds.button(label='End Joint Orient', ann='Orient the end joint of each chain co
 cmds.frameLayout(label='Controls', labelAlign='top')
 cmds.button(label='Nurbs Circle', ann='Makes a NURBS circle', command=AurTDnurbsCircle)
 cmds.button(label='Nurbs Cube', ann='Makes a NURBS cube', command=AurTDnurbsCube)
+cmds.rowColumnLayout("NurbsColours", numberOfColumns=3, h=20)
+cmds.button(label='Red', ann='Set NURBS curve to Red', command=SetNurbsColorRed, bgc=[.8,0.3,0.3])
+cmds.button(label='Yellow', ann='Set NURBS curve to Yellow', command=SetNurbsColorYellow, bgc=[.8,.8,.3])
+cmds.button(label='Blue', ann='Set NURBS curve to Blue', command=SetNurbsColorBlue, bgc=[.3,.6,.8])
+cmds.setParent('..')
+
 
 cmds.frameLayout(label='Rendering', labelAlign='top')
 cmds.button('OCIO_Toggle', label='OCIO Toggle', h=hv, w=wv, ann='Toggle OCIO colour management',
@@ -314,7 +310,6 @@ cmds.button(label='Set Frame End same as Timeline',
 
 cmds.frameLayout(label='Modelling', labelAlign='top')
 cmds.button(label='Delete non-deformer history', ann='Delete non-deformer history', command=AurTDSafeDelHistory)
-cmds.button(label='String _WIP_', ann='Make string between two selected objects', command=AurTDString, bgc=[.5, .5, .6])
 
 cmds.frameLayout(label='Cameras', labelAlign='top')
 cmds.button(label='Overscan to 1.05', ann="Set current camera's Overscan to 1.05", command=AurTDOverscan)
