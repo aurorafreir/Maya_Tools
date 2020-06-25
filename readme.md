@@ -11,12 +11,11 @@
 
 **Mirror selected blendshapes**: not started
 
-**Controller Script**: broken
+**Controller Script**: sorta working, mostly broken
 
 ### Rendering
 
 ### Modelling
-**Wire String**: not working, WIP
 
 ### Layout
 **Export selected objects as reference**: not started
