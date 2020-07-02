@@ -5,8 +5,13 @@ from functools import partial
 def setNurbOverrideColor(Color, self):
     ctrl = cmds.ls(sl=True)
     for i in ctrl:
-        cmds.setAttr(i + ".overrideEnabled",1)
-        cmds.setAttr(i + ".overrideColor", Color)
+        ctrlShape = cmds.listRelatives(i, s=True)
+        for i in ctrlShape:
+            conDispLayer = cmds.listConnections('{}.drawOverride'.format(i))
+            if cmds.isConnected('{}.drawInfo'.format(conDispLayer[0]), '{}.drawOverride'.format(i)):
+                cmds.disconnectAttr('{}.drawInfo'.format(conDispLayer[0]), '{}.drawOverride'.format(i))
+            cmds.setAttr(i + ".overrideEnabled",1)
+            cmds.setAttr(i + ".overrideColor", Color)
 
 wv = 25
 winID = 'setNurbOverrideColorPanel'
@@ -61,3 +66,6 @@ cmds.button(label='', ann='light pink', width=wv, command=partial(setNurbOverrid
 cmds.setParent('..')
 
 cmds.showWindow()
+
+
+
