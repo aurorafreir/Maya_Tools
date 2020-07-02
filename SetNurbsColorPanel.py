@@ -6,12 +6,15 @@ def setNurbOverrideColor(Color, self):
     ctrl = cmds.ls(sl=True)
     for i in ctrl:
         ctrlShape = cmds.listRelatives(i, s=True)
-        for i in ctrlShape:
-            conDispLayer = cmds.listConnections('{}.drawOverride'.format(i))
-            if cmds.isConnected('{}.drawInfo'.format(conDispLayer[0]), '{}.drawOverride'.format(i)):
-                cmds.disconnectAttr('{}.drawInfo'.format(conDispLayer[0]), '{}.drawOverride'.format(i))
-            cmds.setAttr(i + ".overrideEnabled",1)
-            cmds.setAttr(i + ".overrideColor", Color)
+        for shape in ctrlShape:
+            conDispLayer = cmds.listConnections('{}.drawOverride'.format(shape))
+            conDispLayerDrawInfo = '{}.drawInfo'.format(conDispLayer[0])
+            shapeDrawOverride = '{}.drawOverride'.format(shape)
+            if cmds.isConnected(''.format(conDispLayerDrawInfo), '{}'.format(shapeDrawOverride)):
+                cmds.disconnectAttr(conDispLayerDrawInfo, shapeDrawOverride)
+            cmds.setAttr(shape + ".overrideEnabled", 1)
+            cmds.setAttr(shape + ".overrideColor", Color)
+
 
 wv = 25
 winID = 'setNurbOverrideColorPanel'
