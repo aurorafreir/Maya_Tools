@@ -5,10 +5,10 @@ from functools import partial
 # Function to set colour     |||||
 def setNurbOverrideColor(Color, self):
     ctrl = cmds.ls(sl=True)
+    longCtrl = cmds.ls(sl=True, long=True)
     for i in ctrl:
         ctrlShape = cmds.listRelatives(i, s=True)
         for shape in ctrlShape:
-            longCtrl = cmds.ls(sl=True, long=True)
             conDispLayer = cmds.listConnections('{}.drawOverride'.format(shape))
             shapeDrawOverride = '{}|{}.drawOverride'.format(longCtrl[0],shape)
             if cmds.connectionInfo(shapeDrawOverride, id=True):
