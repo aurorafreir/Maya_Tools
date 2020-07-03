@@ -2,19 +2,20 @@ import maya.cmds as cmds
 from functools import partial
 
 
-###Function to set colour
+# Function to set colour     |||||
 def setNurbOverrideColor(Color, self):
     ctrl = cmds.ls(sl=True)
     for i in ctrl:
         ctrlShape = cmds.listRelatives(i, s=True)
         for shape in ctrlShape:
+            longCtrl = cmds.ls(sl=True, long=True)
             conDispLayer = cmds.listConnections('{}.drawOverride'.format(shape))
-            shapeDrawOverride = '{}.drawOverride'.format(shape)
+            shapeDrawOverride = '{}|{}.drawOverride'.format(longCtrl[0],shape)
             if cmds.connectionInfo(shapeDrawOverride, id=True):
                 conDispLayerDrawInfo = '{}.drawInfo'.format(conDispLayer[0])
                 cmds.disconnectAttr(conDispLayerDrawInfo, shapeDrawOverride)
-            cmds.setAttr(shape + ".overrideEnabled", 1)
-            cmds.setAttr(shape + ".overrideColor", Color)
+            cmds.setAttr('{}|{}'.format(longCtrl[0],shape) + ".overrideEnabled", 1)
+            cmds.setAttr('{}|{}'.format(longCtrl[0],shape) + ".overrideColor", Color)
 
 
 wv = 25
