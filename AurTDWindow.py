@@ -151,10 +151,19 @@ def AurTDnurbsCube(self):
                        (-0.5, .5, .5), (-0.5, .5, -0.5), (-0.5, -0.5, -0.5), (-0.5, -0.5, .5), (.5, -0.5, .5)],
                n='CTRL_Cube');
     cmds.parent('CTRL_Cube', 'PIVOT_Cube')
-    # cmds.select('CTRL_Cube')
     cmds.rename('CTRL_Cube', 'CTRL_Cube#')
     cmds.select('PIVOT_Cube')
     cmds.rename('PIVOT_Cube', 'PIVOT_Cube#')
+
+
+def AurTDnurbsPyramid(self):
+    cmds.group(em=True, n='PIVOT_Pyramid')
+    cmds.curve(d=1, p=[(-.5, -1, -.5), (.5, -1, -.5), (.5, -1, .5), (-.5, -1, .5), (-.5, -1, -.5), (0, 0, 0), (-.5, -1, .5), (.5, -1, .5), (0, 0, 0), (.5, -1 ,-.5)],
+               n='CTRL_Pyramid');
+    cmds.parent('CTRL_Pyramid', 'PIVOT_Pyramid')
+    cmds.rename('CTRL_Pyramid', 'CTRL_Pyramid#')
+    cmds.select('PIVOT_Pyramid')
+    cmds.rename('PIVOT_Pyramid', 'PIVOT_Pyramid#')
 
 
 def SetNurbsColorRed(self):
@@ -294,6 +303,7 @@ cmds.button(label='End Joint Orient', ann='Orient the end joint of each chain co
 cmds.frameLayout(label='Controls', labelAlign='top')
 cmds.button(label='Nurbs Circle', ann='Makes a NURBS circle', command=AurTDnurbsCircle)
 cmds.button(label='Nurbs Cube', ann='Makes a NURBS cube', command=AurTDnurbsCube)
+cmds.button(label='Nurbs Pyramid', ann='Makes a NURBS cube', command=AurTDnurbsPyramid)
 cmds.rowColumnLayout("NurbsColours", numberOfColumns=3, h=20)
 cmds.button(label='Red', ann='Set NURBS curve to Red', command=SetNurbsColorRed, bgc=[.8,0.3,0.3])
 cmds.button(label='Yellow', ann='Set NURBS curve to Yellow', command=SetNurbsColorYellow, bgc=[.8,.8,.3])
