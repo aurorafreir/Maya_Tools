@@ -158,7 +158,8 @@ def AurTDnurbsCube(self):
 
 def AurTDnurbsPyramid(self):
     cmds.group(em=True, n='PIVOT_Pyramid')
-    cmds.curve(d=1, p=[(-.5, -1, -.5), (.5, -1, -.5), (.5, -1, .5), (-.5, -1, .5), (-.5, -1, -.5), (0, 0, 0), (-.5, -1, .5), (.5, -1, .5), (0, 0, 0), (.5, -1 ,-.5)],
+    cmds.curve(d=1, p=[(-.5, -1, -.5), (.5, -1, -.5), (.5, -1, .5), (-.5, -1, .5), (-.5, -1, -.5), (0, 0, 0),
+                       (-.5, -1, .5), (.5, -1, .5), (0, 0, 0), (.5, -1 ,-.5)],
                n='CTRL_Pyramid');
     cmds.parent('CTRL_Pyramid', 'PIVOT_Pyramid')
     cmds.rename('CTRL_Pyramid', 'CTRL_Pyramid#')
