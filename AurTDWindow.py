@@ -19,8 +19,8 @@ from SetEndJointOrient import end_joint_orient
 
 import CreateNurbsShapes
 
-def SetNurbsColorRed(self):
     ctrl = cmds.ls(sl=True)
+def SetNurbsColorRed(self):
     for i in ctrl:
         cmds.setAttr(i + ".overrideEnabled", 1)
         cmds.setAttr(i + ".overrideColor", 13)
