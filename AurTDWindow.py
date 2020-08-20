@@ -1,12 +1,9 @@
 import sys
-
-sys.path.append(r"C:\Users\aurora\PycharmProjects\Maya_Scripts/")
-
+import os
 
 import maya.cmds as cmds
 import maya.OpenMaya as OpenMaya
 import maya.OpenMayaUI as OpenMayaUI
-import os
 
 # scene
 from SceneSetup import scene_setup
@@ -19,7 +16,7 @@ from SetEndJointOrient import end_joint_orient
 
 import CreateNurbsShapes
 
-    ctrl = cmds.ls(sl=True)
+
 def SetNurbsColorRed(self):
     for i in ctrl:
         cmds.setAttr(i + ".overrideEnabled", 1)
@@ -69,9 +66,6 @@ def AurTDOverscan(self):
 def create_window(self):
 
     winID = 'aurWindow'
-
-    hv = 25
-    wv = 100
 
     if cmds.window(winID, exists=True):
         cmds.deleteUI(winID)
@@ -125,3 +119,5 @@ def create_window(self):
         cmds.button('OCIO_Toggle', e=True, label='OCIO On', bgc=[.5, .7, .5])
 
     cmds.showWindow()
+
+create_window();
