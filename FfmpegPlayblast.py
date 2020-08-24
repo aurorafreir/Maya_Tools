@@ -8,23 +8,16 @@
 # actual playblast
 
 # os.system('gnome-terminal && cd ~/Downloads && ffmpeg -i video0.mp4 video1.mp4')
+import os
 
 def printFormatMenuItem(item):
     video_format = item
     print video_format
 
-def ffmpeg_playblast(resolutionx, resolutiony, inframe, outframe, exportlocation):
-    print resolutionx
-    print resolutiony
-    print inframe
-    print outframe
-    cmds.playblast(st=int(inframe), et=int(outframe), w=int(resolutionx), h=int(resolutiony), f=exportlocation)
-
 # CREATE WINDOW
 def create_window():
     import maya.cmds as cmds
     from functools import partial
-    import os
 
     if not cmds.optionVar(q='playblastFFmpeg_ffmpegLoc'):
         cmds.optionVar(sv=('playblastFFmpeg_ffmpegLoc', ''))
@@ -64,7 +57,6 @@ def create_window():
     cmds.columnLayout(w=300, rs=5)
     ffmpegLocation = cmds.optionVar(q='playblastFFmpeg_ffmpegLoc')
     ffmpegLocationText = cmds.textFieldButtonGrp('ffmpegLoc', label='FFmpeg Location', buttonLabel='FFmpeg Location', text=ffmpegLocation, cc=save_settings, bc=get_ffmpeg_path)
-    #cmds.button(label="open FFmpeg")
     cmds.setParent('..')
 
     # RESOLUTION
@@ -103,7 +95,6 @@ def create_window():
     cmds.columnLayout()
     OutputLocation = cmds.optionVar(q='playblastFFmpeg_outputLoc')
     outputLocationText = cmds.textFieldButtonGrp('VideoOutputLoc', label="Video Output Location", buttonLabel="Set Output Location", text=OutputLocation, cc=save_settings, bc=get_video_output_path)
-    #cmds.button(label="Output Location")
     cmds.setParent('..')
 
     # EXPORT PLAYBLAST
@@ -114,7 +105,16 @@ def create_window():
         c="ffmpeg_playblast(cmds.optionVar(q='playblastFFmpeg_resolutionx'), cmds.optionVar(q='playblastFFmpeg_resolutiony'), cmds.optionVar(q='playblastFFmpeg_inframe'), cmds.optionVar(q='playblastFFmpeg_outframe'), cmds.optionVar(q='playblastFFmpeg_outputLoc'))")
 
     cmds.showWindow(winID)
+    return ffmpegLocation
 create_window()
+
+
+
+def ffmpeg_playblast(resolutionx, resolutiony, inframe, outframe, exportlocation):
+    ffmpegLocation = create_window()
+    print 'running command: {} -i {} /home/aurora/Downloads/playblast_out.mov'.format(ffmpegLocation, exportlocation)
+    cmds.playblast(st=int(inframe), et=int(outframe), w=int(resolutionx), h=int(resolutiony), f=exportlocation)
+    os.system('{} -i {} /home/aurora/Downloads/playblast_out.mov'.format(ffmpegLocation, exportlocation))
 
 
 def clearOptionVars():
