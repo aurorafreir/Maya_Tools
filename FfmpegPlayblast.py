@@ -1,24 +1,21 @@
-# TODO
-# ffmpeg location /media/aurora/gdrive/Apps/ffmpeg.exe
-# output location
-# // send commands to CLI
-# in/out frames
-# resolution
-# format/encoder
-# actual playblast
-
-# os.system('gnome-terminal && cd ~/Downloads && ffmpeg -i video0.mp4 video1.mp4')
 import os
+import maya.cmds as cmds
 
 def printFormatMenuItem(item):
-    video_format = item
-    print video_format
+    menu_item = item
+    print menu_item
+
+format_list = ['libx264', 'libx265', 'libvpx-vp9']
+
+def printEncodeMenuItem(*args):
+    selected_encode_format = cmds.optionMenu('selected_encode_format', q=True, sl=1)
+    #print cmds.optionMenu('selected_encode_format', q=True, sl=1) - 1
+    encode_format = format_list[selected_encode_format-1]
+    print encode_format
+    return encode_format
 
 # CREATE WINDOW
 def create_window():
-    import maya.cmds as cmds
-    from functools import partial
-
     if not cmds.optionVar(q='playblastFFmpeg_ffmpegLoc'):
         cmds.optionVar(sv=('playblastFFmpeg_ffmpegLoc', ''))
     if not cmds.optionVar(q='playblastFFmpeg_outputLoc'):
@@ -69,6 +66,7 @@ def create_window():
     set_resolutiony = cmds.textField(text=resolutiony, cc=save_settings)
 
     # IN/OUT
+    # Set the in and out frames for the playblast
     cmds.columnLayout()
     cmds.text(label="")
     cmds.text(label="In and Out Frames")
@@ -77,14 +75,23 @@ def create_window():
     outframe = cmds.optionVar(q="playblastFFmpeg_outframe")
     set_outframe = cmds.textField(text=outframe, cc=save_settings)
 
-    # FORMAT
+    # VIDEO FORMAT
     cmds.columnLayout()
     cmds.text(label="")
     cmds.text(label="")
-    cmds.optionMenu(label='Format', cc=printFormatMenuItem)
-    cmds.menuItem(label="mov h.264")
-    cmds.menuItem(label="mov h.265")
-    cmds.menuItem(label="Webm AV9")
+    cmds.optionMenu('selected_video_format', label='Format', cc=printFormatMenuItem)
+    cmds.menuItem('ext', label="use extension")
+    #cmds.menuItem('mov', label="mov")
+    #cmds.menuItem('mp4', label="mp4")
+    #cmds.menuItem('webm', label="Webm")
+
+    # ENCODE FORMAT
+    # Set the video encode format
+    cmds.columnLayout()
+    cmds.optionMenu('selected_encode_format', label='Encoder', cc=printEncodeMenuItem)
+    cmds.menuItem('libx264', label="(mov/mp4) h.264")
+    cmds.menuItem('libx265', label="(mov/mp4) h.265/HEVC")
+    cmds.menuItem('libvpx-vp9', label="(Webm) AV9")
 
     def get_video_output_path(*args):
         file_path = cmds.fileDialog2()[0]
@@ -92,6 +99,7 @@ def create_window():
         save_settings()
 
     # OUTPUT LOCATION
+    # Sets output location for playblast file and ffmpeg file
     cmds.columnLayout()
     OutputLocation = cmds.optionVar(q='playblastFFmpeg_outputLoc')
     outputLocationText = cmds.textFieldButtonGrp('VideoOutputLoc', label="Video Output Location", buttonLabel="Set Output Location", text=OutputLocation, cc=save_settings, bc=get_video_output_path)
@@ -105,16 +113,24 @@ def create_window():
         c="ffmpeg_playblast(cmds.optionVar(q='playblastFFmpeg_resolutionx'), cmds.optionVar(q='playblastFFmpeg_resolutiony'), cmds.optionVar(q='playblastFFmpeg_inframe'), cmds.optionVar(q='playblastFFmpeg_outframe'), cmds.optionVar(q='playblastFFmpeg_outputLoc'))")
 
     cmds.showWindow(winID)
-    return ffmpegLocation
+
+    selected_video_format = cmds.optionMenu('selected_video_format', q=True, value=True)
+    selected_encode_format = cmds.optionMenu('selected_encode_format', q=True, value=True)
+    selected_output_location = cmds.textFieldButtonGrp('VideoOutputLoc', q=True, text=True)
+    return ffmpegLocation, selected_video_format, selected_output_location
 create_window()
 
 
-
 def ffmpeg_playblast(resolutionx, resolutiony, inframe, outframe, exportlocation):
-    ffmpegLocation = create_window()
-    print 'running command: {} -i {} /home/aurora/Downloads/playblast_out.mov'.format(ffmpegLocation, exportlocation)
-    cmds.playblast(st=int(inframe), et=int(outframe), w=int(resolutionx), h=int(resolutiony), f=exportlocation)
-    os.system('{} -i {} /home/aurora/Downloads/playblast_out.mov'.format(ffmpegLocation, exportlocation))
+    ffmpegLocation, video_format, output_location = create_window()
+    encode_format = printEncodeMenuItem()
+    print encode_format
+    print video_format
+    #print os.path.splitext(output_location)[0]
+    #print os.path.splitext(output_location)[1]
+    print 'RUNNING COMMAND: "{} -i {} -c:v {} {}_playblast{}"'.format(ffmpegLocation, output_location, encode_format, os.path.split(output_location)[0], os.path.split(output_location)[1])
+    #cmds.playblast(st=int(inframe), et=int(outframe), w=int(resolutionx), h=int(resolutiony), f=exportlocation)
+    #os.system('"{} -i {} -c:v {} {}_playblast{}"'.format(ffmpegLocation, output_location, encode_format, os.path.split(output_location)[0], os.path.split(output_location)[1]))
 
 
 def clearOptionVars():
