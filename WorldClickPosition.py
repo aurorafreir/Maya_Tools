@@ -106,17 +106,20 @@ def worldClickPosition():
 
     # Extract the different values from the intersection result
     hitPoint = allIntersections
+    #print hitPoint
+    #print type(hitPoint)
+    #print hitPoint[0][0]
+    print (tuple([tup for tup in hitPoint[0][0]][:-1]))
+    #cmds.spaceLocator(p=(tuple([tup for tup in hitPoint[0][0]])))
+    cmds.spaceLocator(p=tuple([tup for tup in hitPoint[0][0]][:-1]))
+    cmds.spaceLocator(p=tuple([tup for tup in hitPoint[0][1]][:-1]))
 
     # Extract x, y, z world coordinates of the hitPoint result
-    #print hitFace
-    #print hitPoint
-    #print hitPoint[0]
     x, y, z, x2, y2, z2 = hitPoint
     #print (x[0], y[0], z[0], x2[0], y2[0], z2[0])
-    print x[0]
+    #print x[0]
 
-    cmds.spaceLocator(p=(x2[0], y2[0], z2[0]))
-    print str.split(str(x[0]))[0]
+    #cmds.spaceLocator(p=(x2[0], y2[0], z2[0]))
     #cmds.spaceLocator(p=(x[0])
     #x, y, z, _ = hitPoint[0]
     #if (x, y, z) != (0.0, 0.0, 0.0):
