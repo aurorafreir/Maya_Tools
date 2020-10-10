@@ -7,6 +7,8 @@ import maya.api.OpenMaya as om
 import maya.api.OpenMayaUI as omui
 import maya.cmds as cmds
 
+global currentJoint
+
 def lerp(min, max, percent):
     return ((max-min)*percent)+min
 
@@ -54,16 +56,19 @@ def rayTrace():
     print vector_lerp(tuple([tup for tup in hitPoint[0][0]][:-1]), tuple([tup for tup in hitPoint[0][1]][:-1]), .5)
     centre = vector_lerp(tuple([tup for tup in hitPoint[0][0]][:-1]), tuple([tup for tup in hitPoint[0][1]][:-1]), .5)
     cmds.spaceLocator(n='LOC_{}'.format(currentJoint))
-    cmds.xform('LOC_centre', t=centre)
+    cmds.xform('LOC_{}'.format(currentJoint), t=centre)
+    print currentJoint
     cmds.setToolTo('selectSuperContext')
 
 rt = 'traceDraggerContext'
 
-def worldClickPosition():
+def worldClickPosition(joint):
+    global currentJoint
+    currentJoint = joint
     # checks if trace dragger context exists, and deletes if it exist
     if cmds.draggerContext(rt, exists=True):
         cmds.deleteUI(rt)
-    cmds.draggerContext(rt, rc=rayTrace('Hips'), cursor='crossHair')
+    cmds.draggerContext(rt, rc=rayTrace, cursor='crossHair')
     cmds.setToolTo(rt)
 
-worldClickPosition()
+worldClickPosition('Shoulder')
