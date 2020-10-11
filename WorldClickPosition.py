@@ -11,6 +11,11 @@ import maya.cmds as cmds
 global current_joint
 global symmetry
 
+symmetry_joints = [
+    'L_Shoulder', 'R_Shoulder',
+    'L_Leg', 'R_Leg'
+]
+
 # 2d lerp
 def lerp(min, max, percent):
     return ((max-min)*percent)+min
@@ -60,9 +65,9 @@ def ray_trace():
         cmds.xform('LOC_{}'.format(current_joint), t=centre)
         #print ('LOC_{}'.format(current_joint)).replace('_L_', '_R_')
         print symmetry
-        if symmetry:
+        if symmetry and current_joint in symmetry_joints:
             current_joint_symmetry = ('LOC_{}'.format(current_joint)).replace('_L_', '_R_')
-            centre_flipped = centre
+            #centre_flipped = centre
             xyz = list(centre)
             xyz[0] = centre[0] * -1
             centre_flipped = tuple(xyz)
@@ -88,6 +93,7 @@ def world_click_position(joint):
     cmds.setToolTo(rt)
 
 # def build_rig
+
 
 def create_window():
     global symmetry
