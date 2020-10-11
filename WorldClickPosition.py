@@ -30,7 +30,7 @@ def ray_trace():
         vpX, vpY, _ = cmds.draggerContext(rt, query=True, anchorPoint=True)
         position = om.MPoint()
         direction = om.MVector()
-        print vpX, vpY, position, direction
+        #print vpX, vpY, position, direction
         omui.M3dView().active3dView().viewToWorld(
             int(vpX), # Viewport click X position as int
             int(vpY), # Viewport click Y position as int
@@ -58,7 +58,8 @@ def ray_trace():
         # creates a locator at 0,0,0, and moves it to the centre point of the click
         cmds.spaceLocator(n='LOC_{}'.format(current_joint))
         cmds.xform('LOC_{}'.format(current_joint), t=centre)
-        print ('LOC_{}'.format(current_joint)).replace('_L_', '_R_')
+        #print ('LOC_{}'.format(current_joint)).replace('_L_', '_R_')
+        print symmetry
         if symmetry:
             current_joint_symmetry = ('LOC_{}'.format(current_joint)).replace('_L_', '_R_')
             centre_flipped = centre
@@ -66,8 +67,8 @@ def ray_trace():
             xyz[0] = centre[0] * -1
             centre_flipped = tuple(xyz)
             #centre_flipped[0] = centre[0] * -1
-            print centre
-            print centre_flipped
+            #print centre
+            #print centre_flipped
             cmds.spaceLocator(n=current_joint_symmetry)
             cmds.xform(current_joint_symmetry, t=centre_flipped)
             cmds.select('LOC_{}'.format(current_joint))
@@ -100,7 +101,7 @@ def create_window():
     cmds.window(winID, title='Aurtorigger')
     cmds.columnLayout(adjustableColumn=True, rowSpacing=5, width=200)
     cmds.checkBox('symmetryCheckbox', label='Automatic Symmetry', v=1, onc='symmetry=1', ofc='symmetry=0')
-    #symmetry = cmds.checkBox('symmetryCheckbox', q=1, v=1)
+    symmetry = cmds.checkBox('symmetryCheckbox', q=1, v=1)
 
     cmds.frameLayout(label='Arms', labelAlign='top')
     cmds.rowColumnLayout("NurbsColours", numberOfColumns=2)
@@ -119,7 +120,7 @@ def create_window():
     cmds.button(label='R_Leg', ann='', command='world_click_position("R_Leg")')
     cmds.setParent('..')
 
-    cmds.checkBox(label='')
+    cmds.checkBox(label='Smooth twist limbs')
 
     cmds.button(label='B U I L D    R I G', bgc=(.8,.3,.3))
 

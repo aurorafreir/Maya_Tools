@@ -52,7 +52,7 @@ def create_window():
 
 
     '''
-    creates optionVars to save variables into maya, so textboxes will keep their text after reloading window or Maya itself
+    creates optionVars to save variables into maya, so textboxes will keep their text after reloading window or Maya
     '''
     def save_settings(*args):
         if cmds.textFieldButtonGrp('ffmpegLoc', q=True, text=True):
@@ -77,7 +77,12 @@ def create_window():
     '''
     cmds.columnLayout(w=300, rs=5)
     ffmpegLocation = cmds.optionVar(q='playblastFFmpeg_ffmpegLoc')
-    ffmpegLocationText = cmds.textFieldButtonGrp('ffmpegLoc', label='FFmpeg Location', buttonLabel='FFmpeg Location', text=ffmpegLocation, cc=save_settings, bc=get_ffmpeg_path)
+    ffmpegLocationText = cmds.textFieldButtonGrp('ffmpegLoc',
+                                                 label='FFmpeg Location',
+                                                 buttonLabel='FFmpeg Location',
+                                                 text=ffmpegLocation,
+                                                 cc=save_settings,
+                                                 bc=get_ffmpeg_path)
     cmds.setParent('..')
 
     # RESOLUTION
@@ -142,7 +147,12 @@ def create_window():
     '''
     cmds.columnLayout()
     OutputLocation = cmds.optionVar(q='playblastFFmpeg_outputLoc')
-    outputLocationText = cmds.textFieldButtonGrp('VideoOutputLoc', label="Video Output Location", buttonLabel="Set Output Location", text=OutputLocation, cc=save_settings, bc=get_video_output_path)
+    outputLocationText = cmds.textFieldButtonGrp('VideoOutputLoc',
+                                                 label="Video Output Location",
+                                                 buttonLabel="Set Output Location",
+                                                 text=OutputLocation,
+                                                 cc=save_settings,
+                                                 bc=get_video_output_path)
     cmds.setParent('..')
 
     # EXPORT PLAYBLAST
@@ -154,7 +164,6 @@ def create_window():
         label="Export Playblast",
         h=50,
         c="ffmpeg_playblast(cmds.optionVar(q='playblastFFmpeg_resolutionx'), cmds.optionVar(q='playblastFFmpeg_resolutiony'), cmds.optionVar(q='playblastFFmpeg_inframe'), cmds.optionVar(q='playblastFFmpeg_outframe'), cmds.optionVar(q='playblastFFmpeg_outputLoc'))")
-
     cmds.showWindow(winID)
 
     selected_video_format = cmds.optionMenu('selected_video_format', q=True, value=True)
@@ -179,9 +188,14 @@ def ffmpeg_playblast(resolutionx, resolutiony, inframe, outframe, exportlocation
     #print video_format
     #print os.path.splitext(output_location)[0]
     #print os.path.splitext(output_location)[1]
-    print 'RUNNING COMMAND: "{} -i {} -c:v {} {}_output{}"'.format(ffmpegLocation, output_location, encode_format, os.path.split(output_location)[0], os.path.split(output_location)[1])
+    print 'RUNNING COMMAND: "{} -i {} -c:v {} {}_output{}"'.format(ffmpegLocation,
+                                                                   output_location,
+                                                                   encode_format,
+                                                                   os.path.split(output_location)[0],
+                                                                   os.path.split(output_location)[1])
     #cmds.playblast(st=int(inframe), et=int(outframe), w=int(resolutionx), h=int(resolutiony), f=exportlocation)
-    #os.system('"{} -i {} -c:v {} {}_output{}"'.format(ffmpegLocation, output_location, encode_format, os.path.split(output_location)[0], os.path.split(output_location)[1]))
+    #os.system('"{} -i {} -c:v {} {}_output{}"'.format(ffmpegLocation, output_location, encode_format,
+        # os.path.split(output_location)[0], os.path.split(output_location)[1]))
 
 
 def clearOptionVars():
