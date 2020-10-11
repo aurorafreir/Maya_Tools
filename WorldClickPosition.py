@@ -37,8 +37,8 @@ def ray_trace():
         direction = om.MVector()
         #print vpX, vpY, position, direction
         omui.M3dView().active3dView().viewToWorld(
-            int(vpX), # Viewport click X position as int
-            int(vpY), # Viewport click Y position as int
+            int(vpX),  # Viewport click X position as int
+            int(vpY),  # Viewport click Y position as int
             position,  # world point
             direction)  # world vector
 
@@ -59,7 +59,9 @@ def ray_trace():
         # Extract hit values from the intersection result
         hitPoint = allIntersections
         #sets the 'centre' var to the midpoint first and last intersection
-        centre = vector_lerp(tuple([tup for tup in hitPoint[0][0]][:-1]), tuple([tup for tup in hitPoint[0][1]][:-1]), .5)
+        temp_start = [tup for tup in hitPoint[0][0]][:-1]
+        temp_end = [tup for tup in hitPoint[0][1]][:-1]
+        centre = vector_lerp(temp_start, temp_end, .5)
         # creates a locator at 0,0,0, and moves it to the centre point of the click
         cmds.spaceLocator(n='LOC_{}'.format(current_joint))
         cmds.xform('LOC_{}'.format(current_joint), t=centre)
@@ -92,7 +94,28 @@ def world_click_position(joint):
     cmds.draggerContext(rt, rc=ray_trace, cursor='crossHair')
     cmds.setToolTo(rt)
 
-# def build_rig
+def build_rig():
+    # print 'Rig Build currently not working'
+    all_locators = [
+        'LOC_Hips', 'LOC_L_Shoulder', 'LOC_R_Shoulder', 'LOC_L_Leg', 'LOC_R_Leg'
+    ]
+    # check if all joints exist
+    found_locators = cmds.ls(all_locators)
+    #print all_locators
+    #print found_locators
+    if found_locators == all_locators:
+        for i in all_locators:
+            joint_name = i.replace('LOC_', 'JNT_')
+            print joint_name
+            #cmds.joint()
+            #cmds.rename('joint1', joint_name)
+            cmds.joint(n='{}'.format(joint_name), p=(0,0,0))
+            new_location = cmds.xform((i), q=True, t=True)
+            print new_location
+            cmds.xform('{}'.format(joint_name), t=new_location)
+            cmds.select(d=True)
+    else:
+        print "missing locators"
 
 
 def create_window():
@@ -128,7 +151,7 @@ def create_window():
 
     cmds.checkBox(label='Smooth twist limbs')
 
-    cmds.button(label='B U I L D    R I G', bgc=(.8,.3,.3))
+    cmds.button(label='B U I L D    R I G', bgc=(.8,.3,.3), command='build_rig()')
 
     cmds.showWindow()
 
