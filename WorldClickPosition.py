@@ -20,8 +20,21 @@ symmetry_joints = [
     'L_Wrist', 'R_Wrist',
     'L_Leg', 'R_Leg',
     'L_Knee', 'R_Knee',
-    'L_Ankle', 'R_Ankle'
+    'L_Ankle', 'R_Ankle',
+
+    'L_Index1', 'L_Index2', 'L_Index3',
+    'L_Middle1', 'L_Middle2', 'L_Middle3',
+    'L_Ring1', 'L_Ring2', 'L_Ring3',
+    'L_Pinky1', 'L_Pinky2', 'L_Pinky3',
+    'L_Thumb1', 'L_Thumb2', 'L_Thumb3',
+
+    'R_Index1', 'R_Index2', 'R_Index3',
+    'R_Middle1', 'R_Middle2', 'R_Middle3',
+    'R_Ring1', 'R_Ring2', 'R_Ring3',
+    'R_Pinky1', 'R_Pinky2', 'R_Pinky3',
+    'R_Ring1', 'R_Ring2', 'R_Ring3'
 ]
+
 
 
 # finds the point between two numbers based on the Percent variable
@@ -144,11 +157,17 @@ def build_rig():
     # List of all the joints that aren't required to make the rig, but can still be built
     not_required_locators = [
         'LOC_L_Scapula', 'LOC_R_Scapula',
-        'LOC_L_Thumb1', 'LOC_L_Thumb2', 'LOC_L_Thumb3',
-        'LOC_L_Index1', 'LOC_L_Index2', 'LOC_L_Index3'
+        'LOC_L_Index1', 'LOC_L_Index2', 'LOC_L_Index3',
         'LOC_L_Middle1', 'LOC_L_Middle2', 'LOC_L_Middle3',
         'LOC_L_Ring1', 'LOC_L_Ring2', 'LOC_L_Ring3',
-        'LOC_L_Pinky1', 'LOC_L_Pinky2', 'LOC_L_Pinky3'
+        'LOC_L_Pinky1', 'LOC_L_Pinky2', 'LOC_L_Pinky3',
+        'LOC_L_Thumb1', 'LOC_L_Thumb2', 'LOC_L_Thumb3',
+
+        'LOC_R_Index1', 'LOC_R_Index2', 'LOC_R_Index3',
+        'LOC_R_Middle1', 'LOC_R_Middle2', 'LOC_R_Middle3',
+        'LOC_R_Ring1', 'LOC_R_Ring2', 'LOC_R_Ring3',
+        'LOC_R_Pinky1', 'LOC_R_Pinky2', 'LOC_R_Pinky3',
+        'LOC_R_Thumb1', 'LOC_R_Thumb2', 'LOC_R_Thumb3'
     ]
 
     # searches the scene for the locators from all_locators and sets them in found_locators
@@ -180,13 +199,16 @@ def build_rig():
                 cmds.xform('{}'.format(joint_name), t=new_location)
                 cmds.select(d=True)
 
-    # Sets up the parents for the required joints
+    # Sets up the parents for the joints, after checking that they're not already parented
     if found_required_locators == required_locators:
-        cmds.parent('JNT_Chest', 'JNT_Hips')
-        cmds.parent('JNT_Neck', 'JNT_Chest')
-        cmds.parent('JNT_Head', 'JNT_Neck')
+        if not cmds.listRelatives('JNT_Chest', p=True):
+            cmds.parent('JNT_Chest', 'JNT_Hips')
+        if not cmds.listRelatives('JNT_Neck', p=True):
+            cmds.parent('JNT_Neck', 'JNT_Chest')
+        if not cmds.listRelatives('JNT_Head', p=True):
+            cmds.parent('JNT_Head', 'JNT_Neck')
+        # parenting for joints with both L and R sides
         for i in ['L', 'R']:
-            print cmds.objExists('JNT_{}_Scapula'.format(i))
             if cmds.objExists('JNT_{}_Scapula'.format(i)):
                 cmds.parent('JNT_{}_Scapula'.format(i), 'JNT_Chest')
                 cmds.parent('JNT_{}_Shoulder'.format(i), 'JNT_{}_Scapula'.format(i))
@@ -197,6 +219,29 @@ def build_rig():
             cmds.parent('JNT_{}_Leg'.format(i), 'JNT_Hips')
             cmds.parent('JNT_{}_Knee'.format(i), 'JNT_{}_Leg'.format(i))
             cmds.parent('JNT_{}_Ankle'.format(i), 'JNT_{}_Knee'.format(i))
+
+            # fingers #
+            if cmds.objExists('JNT_{}_Thumb1'.format(i)):
+                cmds.parent('JNT_{}_Thumb1'.format(i), 'JNT_{}_Wrist'.format(i))
+                cmds.parent('JNT_{}_Thumb2'.format(i), 'JNT_{}_Thumb1'.format(i))
+                cmds.parent('JNT_{}_Thumb3'.format(i), 'JNT_{}_Thumb2'.format(i))
+            if cmds.objExists('JNT_{}_Index1'.format(i)):
+                cmds.parent('JNT_{}_Index1'.format(i), 'JNT_{}_Wrist'.format(i))
+                cmds.parent('JNT_{}_Index2'.format(i), 'JNT_{}_Index1'.format(i))
+                cmds.parent('JNT_{}_Index3'.format(i), 'JNT_{}_Index2'.format(i))
+            if cmds.objExists('JNT_{}_Middle1'.format(i)):
+                cmds.parent('JNT_{}_Middle1'.format(i), 'JNT_{}_Wrist'.format(i))
+                cmds.parent('JNT_{}_Middle2'.format(i), 'JNT_{}_Middle1'.format(i))
+                cmds.parent('JNT_{}_Middle3'.format(i), 'JNT_{}_Middle2'.format(i))
+            if cmds.objExists('JNT_{}_Ring1'.format(i)):
+                cmds.parent('JNT_{}_Ring1'.format(i), 'JNT_{}_Wrist'.format(i))
+                cmds.parent('JNT_{}_Ring2'.format(i), 'JNT_{}_Ring1'.format(i))
+                cmds.parent('JNT_{}_Ring3'.format(i), 'JNT_{}_Ring2'.format(i))
+            if cmds.objExists('JNT_{}_Pinky1'.format(i)):
+                cmds.parent('JNT_{}_Pinky1'.format(i), 'JNT_{}_Wrist'.format(i))
+                cmds.parent('JNT_{}_Pinky2'.format(i), 'JNT_{}_Pinky1'.format(i))
+                cmds.parent('JNT_{}_Pinky3'.format(i), 'JNT_{}_Pinky2'.format(i))
+
 
 
 def create_window():
@@ -218,7 +263,7 @@ def create_window():
     symmetry = cmds.checkBox('symmetryCheckbox', q=1, v=1)
 
     cmds.frameLayout(label='Arms', labelAlign='top')
-    cmds.rowColumnLayout("NurbsColours", numberOfColumns=2)
+    cmds.rowColumnLayout("arms_buttons", numberOfColumns=2)
     cmds.button(label='L_Scapula', ann='', command='world_click_position("L_Scapula")')
     cmds.button(label='R_Scapula', ann='', command='world_click_position("R_Scapula")')
     cmds.button(label='L_Shoulder', ann='', command='world_click_position("L_Shoulder")', bgc=required_joints_colour)
@@ -229,9 +274,32 @@ def create_window():
     cmds.button(label='R_Wrist', ann='', command='world_click_position("R_Wrist")', bgc=required_joints_colour)
     cmds.setParent('..')
 
+    # creates the layout for the Fingers buttons
+    cmds.rowColumnLayout("fingers_buttons", numberOfColumns=7)
+    finger_joints = ['Index', 'Middle', 'Ring', 'Pinky', 'Thumb']
+    for finger_joint in finger_joints:
+        for hand in ['L', 'R']:
+            for idx in range(1, 4):
+                label = hand + "_" + finger_joint + str(idx)
+                command = 'world_click_position("{}")'.format(label)
+                data = {
+                    'label': label,
+                    'ann': '',
+                    'command': command
+                }
+                cmds.button(**data)
+            data = {
+                'label': '',
+                'w': 20,
+                'en': False
+            }
+            if hand == 'L':
+                cmds.button(**data)
+    cmds.setParent('..')
+
     cmds.frameLayout(label='Hips/Chest/Head', labelAlign='top')
     cmds.rowColumnLayout("NurbsColours", numberOfColumns=1)
-    cmds.button(label='Head', ann='', command='world_click_position("Head")', bgc=required_joints_colour)
+    cmds.button(label='Head', ann='', command='woood grld_click_position("Head")', bgc=required_joints_colour)
     cmds.button(label='Neck', ann='', command='world_click_position("Neck")', bgc=required_joints_colour)
     cmds.button(label='Chest', ann='', command='world_click_position("Chest")', bgc=required_joints_colour)
     cmds.button(label='Hips', ann='', command='world_click_position("Hips")', bgc=required_joints_colour)
