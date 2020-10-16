@@ -11,30 +11,22 @@ import maya.cmds as cmds
 global current_joint
 global symmetry
 global centre_mid_joints
+symmetry_joints = []
 
 # list of joints that would require symmetry if created
-symmetry_joints = [
-    'L_Scapula', 'R_Scapula',
-    'L_Shoulder', 'R_Shoulder',
-    'L_Elbow', 'R_Elbow',
-    'L_Wrist', 'R_Wrist',
-    'L_Leg', 'R_Leg',
-    'L_Knee', 'R_Knee',
-    'L_Ankle', 'R_Ankle',
+L_symmetry_joints = [
+    'L_Scapula', 'L_Shoulder', 'L_Elbow', 'L_Wrist',
+    'L_Leg', 'L_Knee', 'L_Ankle',
 
     'L_Index1', 'L_Index2', 'L_Index3',
     'L_Middle1', 'L_Middle2', 'L_Middle3',
     'L_Ring1', 'L_Ring2', 'L_Ring3',
     'L_Pinky1', 'L_Pinky2', 'L_Pinky3',
     'L_Thumb1', 'L_Thumb2', 'L_Thumb3',
-
-    'R_Index1', 'R_Index2', 'R_Index3',
-    'R_Middle1', 'R_Middle2', 'R_Middle3',
-    'R_Ring1', 'R_Ring2', 'R_Ring3',
-    'R_Pinky1', 'R_Pinky2', 'R_Pinky3',
-    'R_Ring1', 'R_Ring2', 'R_Ring3'
 ]
-
+for i in L_symmetry_joints:
+    symmetry_joints.append(i.replace('L_', 'R_'))
+symmetry_joints.append(L_symmetry_joints)
 
 
 # finds the point between two numbers based on the Percent variable
@@ -210,38 +202,64 @@ def build_rig():
         # parenting for joints with both L and R sides
         for i in ['L', 'R']:
             if cmds.objExists('JNT_{}_Scapula'.format(i)):
-                cmds.parent('JNT_{}_Scapula'.format(i), 'JNT_Chest')
-                cmds.parent('JNT_{}_Shoulder'.format(i), 'JNT_{}_Scapula'.format(i))
+                if not cmds.listRelatives('JNT_{}_Scapula'.format(i), p=True):
+                    cmds.parent('JNT_{}_Scapula'.format(i), 'JNT_Chest')
+                if not cmds.listRelatives('JNT_{}_Shoulder'.format(i), p=True):
+                    cmds.parent('JNT_{}_Shoulder'.format(i), 'JNT_{}_Scapula'.format(i))
             else:
                 cmds.parent('JNT_{}_Shoulder'.format(i), 'JNT_Chest')
-            cmds.parent('JNT_{}_Elbow'.format(i), 'JNT_{}_Shoulder'.format(i))
-            cmds.parent('JNT_{}_Wrist'.format(i), 'JNT_{}_Elbow'.format(i))
-            cmds.parent('JNT_{}_Leg'.format(i), 'JNT_Hips')
-            cmds.parent('JNT_{}_Knee'.format(i), 'JNT_{}_Leg'.format(i))
-            cmds.parent('JNT_{}_Ankle'.format(i), 'JNT_{}_Knee'.format(i))
+
+            if not cmds.listRelatives('JNT_{}_Elbow'.format(i), p=True):
+                cmds.parent('JNT_{}_Elbow'.format(i), 'JNT_{}_Shoulder'.format(i))
+            if not cmds.listRelatives('JNT_{}_Wrist'.format(i), p=True):
+                cmds.parent('JNT_{}_Wrist'.format(i), 'JNT_{}_Elbow'.format(i))
+            if not cmds.listRelatives('JNT_{}_Leg'.format(i), p=True):
+                cmds.parent('JNT_{}_Leg'.format(i), 'JNT_Hips')
+            if not cmds.listRelatives('JNT_{}_Knee'.format(i), p=True):
+                cmds.parent('JNT_{}_Knee'.format(i), 'JNT_{}_Leg'.format(i))
+            if not cmds.listRelatives('JNT_{}_Ankle'.format(i), p=True):
+                cmds.parent('JNT_{}_Ankle'.format(i), 'JNT_{}_Knee'.format(i))
 
             # fingers #
             if cmds.objExists('JNT_{}_Thumb1'.format(i)):
-                cmds.parent('JNT_{}_Thumb1'.format(i), 'JNT_{}_Wrist'.format(i))
-                cmds.parent('JNT_{}_Thumb2'.format(i), 'JNT_{}_Thumb1'.format(i))
-                cmds.parent('JNT_{}_Thumb3'.format(i), 'JNT_{}_Thumb2'.format(i))
-            if cmds.objExists('JNT_{}_Index1'.format(i)):
-                cmds.parent('JNT_{}_Index1'.format(i), 'JNT_{}_Wrist'.format(i))
-                cmds.parent('JNT_{}_Index2'.format(i), 'JNT_{}_Index1'.format(i))
-                cmds.parent('JNT_{}_Index3'.format(i), 'JNT_{}_Index2'.format(i))
-            if cmds.objExists('JNT_{}_Middle1'.format(i)):
-                cmds.parent('JNT_{}_Middle1'.format(i), 'JNT_{}_Wrist'.format(i))
-                cmds.parent('JNT_{}_Middle2'.format(i), 'JNT_{}_Middle1'.format(i))
-                cmds.parent('JNT_{}_Middle3'.format(i), 'JNT_{}_Middle2'.format(i))
-            if cmds.objExists('JNT_{}_Ring1'.format(i)):
-                cmds.parent('JNT_{}_Ring1'.format(i), 'JNT_{}_Wrist'.format(i))
-                cmds.parent('JNT_{}_Ring2'.format(i), 'JNT_{}_Ring1'.format(i))
-                cmds.parent('JNT_{}_Ring3'.format(i), 'JNT_{}_Ring2'.format(i))
-            if cmds.objExists('JNT_{}_Pinky1'.format(i)):
-                cmds.parent('JNT_{}_Pinky1'.format(i), 'JNT_{}_Wrist'.format(i))
-                cmds.parent('JNT_{}_Pinky2'.format(i), 'JNT_{}_Pinky1'.format(i))
-                cmds.parent('JNT_{}_Pinky3'.format(i), 'JNT_{}_Pinky2'.format(i))
+                if not cmds.listRelatives('JNT_{}_Thumb1'.format(i), p=True):
+                    cmds.parent('JNT_{}_Thumb1'.format(i), 'JNT_{}_Wrist'.format(i))
+                if not cmds.listRelatives('JNT_{}_Thumb2'.format(i), p=True):
+                    cmds.parent('JNT_{}_Thumb2'.format(i), 'JNT_{}_Thumb1'.format(i))
+                if not cmds.listRelatives('JNT_{}_Thumb3'.format(i), p=True):
+                    cmds.parent('JNT_{}_Thumb3'.format(i), 'JNT_{}_Thumb2'.format(i))
 
+            if cmds.objExists('JNT_{}_Index1'.format(i)):
+                if not cmds.listRelatives('JNT_{}_Index1'.format(i), p=True):
+                    cmds.parent('JNT_{}_Index1'.format(i), 'JNT_{}_Wrist'.format(i))
+                if not cmds.listRelatives('JNT_{}_Index2'.format(i), p=True):
+                    cmds.parent('JNT_{}_Index2'.format(i), 'JNT_{}_Index1'.format(i))
+                if not cmds.listRelatives('JNT_{}_Index3'.format(i), p=True):
+                    cmds.parent('JNT_{}_Index3'.format(i), 'JNT_{}_Index2'.format(i))
+
+            if cmds.objExists('JNT_{}_Middle1'.format(i)):
+                if not cmds.listRelatives('JNT_{}_Middle1'.format(i), p=True):
+                    cmds.parent('JNT_{}_Middle1'.format(i), 'JNT_{}_Wrist'.format(i))
+                if not cmds.listRelatives('JNT_{}_Middle2'.format(i), p=True):
+                    cmds.parent('JNT_{}_Middle2'.format(i), 'JNT_{}_Middle1'.format(i))
+                if not cmds.listRelatives('JNT_{}_Middle3'.format(i), p=True):
+                    cmds.parent('JNT_{}_Middle3'.format(i), 'JNT_{}_Middle2'.format(i))
+
+            if cmds.objExists('JNT_{}_Ring1'.format(i)):
+                if not cmds.listRelatives('JNT_{}_Ring1'.format(i), p=True):
+                    cmds.parent('JNT_{}_Ring1'.format(i), 'JNT_{}_Wrist'.format(i))
+                if not cmds.listRelatives('JNT_{}_Ring2'.format(i), p=True):
+                    cmds.parent('JNT_{}_Ring2'.format(i), 'JNT_{}_Ring1'.format(i))
+                if not cmds.listRelatives('JNT_{}_Ring3'.format(i), p=True):
+                    cmds.parent('JNT_{}_Ring3'.format(i), 'JNT_{}_Ring2'.format(i))
+
+            if cmds.objExists('JNT_{}_Pinky1'.format(i)):
+                if not cmds.listRelatives('JNT_{}_Pinky1'.format(i), p=True):
+                    cmds.parent('JNT_{}_Pinky1'.format(i), 'JNT_{}_Wrist'.format(i))
+                if not cmds.listRelatives('JNT_{}_Pinky2'.format(i), p=True):
+                    cmds.parent('JNT_{}_Pinky2'.format(i), 'JNT_{}_Pinky1'.format(i))
+                if not cmds.listRelatives('JNT_{}_Pinky3'.format(i), p=True):
+                    cmds.parent('JNT_{}_Pinky3'.format(i), 'JNT_{}_Pinky2'.format(i))
 
 
 def create_window():
@@ -249,7 +267,7 @@ def create_window():
 
     global symmetry
     global centre_mid_joints
-    required_joints_colour = (.4,.6,.7)
+    required_joints_colour = (.7,.6,.6)
 
     # sets a window ID
     win_id = 'aurtorigger'
