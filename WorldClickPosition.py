@@ -221,45 +221,15 @@ def build_rig():
                 cmds.parent('JNT_{}_Ankle'.format(i), 'JNT_{}_Knee'.format(i))
 
             # fingers #
-            if cmds.objExists('JNT_{}_Thumb1'.format(i)):
-                if not cmds.listRelatives('JNT_{}_Thumb1'.format(i), p=True):
-                    cmds.parent('JNT_{}_Thumb1'.format(i), 'JNT_{}_Wrist'.format(i))
-                if not cmds.listRelatives('JNT_{}_Thumb2'.format(i), p=True):
-                    cmds.parent('JNT_{}_Thumb2'.format(i), 'JNT_{}_Thumb1'.format(i))
-                if not cmds.listRelatives('JNT_{}_Thumb3'.format(i), p=True):
-                    cmds.parent('JNT_{}_Thumb3'.format(i), 'JNT_{}_Thumb2'.format(i))
-
-            if cmds.objExists('JNT_{}_Index1'.format(i)):
-                if not cmds.listRelatives('JNT_{}_Index1'.format(i), p=True):
-                    cmds.parent('JNT_{}_Index1'.format(i), 'JNT_{}_Wrist'.format(i))
-                if not cmds.listRelatives('JNT_{}_Index2'.format(i), p=True):
-                    cmds.parent('JNT_{}_Index2'.format(i), 'JNT_{}_Index1'.format(i))
-                if not cmds.listRelatives('JNT_{}_Index3'.format(i), p=True):
-                    cmds.parent('JNT_{}_Index3'.format(i), 'JNT_{}_Index2'.format(i))
-
-            if cmds.objExists('JNT_{}_Middle1'.format(i)):
-                if not cmds.listRelatives('JNT_{}_Middle1'.format(i), p=True):
-                    cmds.parent('JNT_{}_Middle1'.format(i), 'JNT_{}_Wrist'.format(i))
-                if not cmds.listRelatives('JNT_{}_Middle2'.format(i), p=True):
-                    cmds.parent('JNT_{}_Middle2'.format(i), 'JNT_{}_Middle1'.format(i))
-                if not cmds.listRelatives('JNT_{}_Middle3'.format(i), p=True):
-                    cmds.parent('JNT_{}_Middle3'.format(i), 'JNT_{}_Middle2'.format(i))
-
-            if cmds.objExists('JNT_{}_Ring1'.format(i)):
-                if not cmds.listRelatives('JNT_{}_Ring1'.format(i), p=True):
-                    cmds.parent('JNT_{}_Ring1'.format(i), 'JNT_{}_Wrist'.format(i))
-                if not cmds.listRelatives('JNT_{}_Ring2'.format(i), p=True):
-                    cmds.parent('JNT_{}_Ring2'.format(i), 'JNT_{}_Ring1'.format(i))
-                if not cmds.listRelatives('JNT_{}_Ring3'.format(i), p=True):
-                    cmds.parent('JNT_{}_Ring3'.format(i), 'JNT_{}_Ring2'.format(i))
-
-            if cmds.objExists('JNT_{}_Pinky1'.format(i)):
-                if not cmds.listRelatives('JNT_{}_Pinky1'.format(i), p=True):
-                    cmds.parent('JNT_{}_Pinky1'.format(i), 'JNT_{}_Wrist'.format(i))
-                if not cmds.listRelatives('JNT_{}_Pinky2'.format(i), p=True):
-                    cmds.parent('JNT_{}_Pinky2'.format(i), 'JNT_{}_Pinky1'.format(i))
-                if not cmds.listRelatives('JNT_{}_Pinky3'.format(i), p=True):
-                    cmds.parent('JNT_{}_Pinky3'.format(i), 'JNT_{}_Pinky2'.format(i))
+            fingers = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
+            for finger in fingers:
+                if cmds.objExists('JNT_{}_{}1'.format(i, finger)):
+                    if not cmds.listRelatives('JNT_{}_{}1'.format(i, finger), p=True):
+                        cmds.parent('JNT_{}_{}1'.format(i, finger), 'JNT_{}_Wrist'.format(i))
+                    if not cmds.listRelatives('JNT_{}_{}2'.format(i, finger), p=True):
+                        cmds.parent('JNT_{}_{}2'.format(i, finger), 'JNT_{}_{}1'.format(i, finger))
+                    if not cmds.listRelatives('JNT_{}_{}3'.format(i, finger), p=True):
+                        cmds.parent('JNT_{}_{}3'.format(i, finger), 'JNT_{}_{}2'.format(i, finger))
 
 
 def create_window():
