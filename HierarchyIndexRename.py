@@ -4,7 +4,7 @@ selected_joints = cmds.ls(sl=1)
 
 if selected_joints:
     for parent_joint in selected_joints:
-        cur_joint_name = joint
+        cur_joint_name = parent_joint
         rename_joints = cmds.listRelatives(parent_joint, ad=1)[::-1]
         new_name = parent_joint.strip("1234567890")
         count = 1

@@ -237,7 +237,7 @@ def create_window():
 
     global symmetry
     global centre_mid_joints
-    required_joints_colour = (.7,.6,.6)
+    required_joints_colour = (.6,.6,.6)
 
     # sets a window ID
     win_id = 'aurtorigger'
@@ -263,12 +263,12 @@ def create_window():
     cmds.setParent('..')
 
     # creates the layout for the Fingers buttons
-    cmds.rowColumnLayout("fingers_buttons", numberOfColumns=7)
+    cmds.rowColumnLayout('fingers_button', numberOfColumns=7)
     finger_joints = ['Index', 'Middle', 'Ring', 'Pinky', 'Thumb']
     for finger_joint in finger_joints:
         for hand in ['L', 'R']:
             for idx in range(1, 4):
-                label = hand + "_" + finger_joint + str(idx)
+                label = hand + '_' + finger_joint + str(idx)
                 command = 'world_click_position("{}")'.format(label)
                 data = {
                     'label': label,
@@ -287,7 +287,7 @@ def create_window():
 
     cmds.frameLayout(label='Hips/Chest/Head', labelAlign='top')
     cmds.rowColumnLayout("NurbsColours", numberOfColumns=1)
-    cmds.button(label='Head', ann='', command='woood grld_click_position("Head")', bgc=required_joints_colour)
+    cmds.button(label='Head', ann='', command='world_click_position("Head")', bgc=required_joints_colour)
     cmds.button(label='Neck', ann='', command='world_click_position("Neck")', bgc=required_joints_colour)
     cmds.button(label='Chest', ann='', command='world_click_position("Chest")', bgc=required_joints_colour)
     cmds.button(label='Hips', ann='', command='world_click_position("Hips")', bgc=required_joints_colour)
