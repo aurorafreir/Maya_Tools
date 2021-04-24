@@ -1,3 +1,6 @@
+# Takes an input CSV file and sets it as the Translate X/Y/Z positions on the selected object
+# based on the A/B/C columns in the CSV file, with the rows as frame numbers
+
 import maya.cmds as cmds
 import csv
 
