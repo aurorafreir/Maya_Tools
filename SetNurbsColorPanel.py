@@ -1,26 +1,61 @@
 import maya.cmds as cmds
 from functools import partial
 
-
-# Function to set colour     |||||
+#Function to set colour
 def setNurbOverrideColor(Color, self):
     ctrl = cmds.ls(sl=True)
-    longCtrl = cmds.ls(sl=True, long=True)
-    for i in ctrl:
-        ctrlShape = cmds.listRelatives(i, s=True)
-        for shape in ctrlShape:
-            conDispLayer = cmds.listConnections('{}.drawOverride'.format(shape))
-            shapeDrawOverride = '{}|{}.drawOverride'.format(longCtrl[0],shape)
-            if cmds.connectionInfo(shapeDrawOverride, id=True):
-                conDispLayerDrawInfo = '{}.drawInfo'.format(conDispLayer[0])
-                cmds.disconnectAttr(conDispLayerDrawInfo, shapeDrawOverride)
-            cmds.setAttr('{}|{}'.format(longCtrl[0],shape) + ".overrideEnabled", 1)
-            cmds.setAttr('{}|{}'.format(longCtrl[0],shape) + ".overrideColor", Color)
-
+    for control in ctrl:
+        ctrlshapes = cmds.listRelatives(s=1, f=1)
+        for shape in ctrlshapes:
+            cmds.setAttr(shape + ".overrideEnabled",1)
+            cmds.setAttr(shape + ".overrideColor", Color)
+            
+            
+buttons_one = (
+            ("black",         1,     (0,0,0)), 
+            ("dark grey",     2,     (.2, .2, .2)),
+            ("light grey",    3,     (.6, .6, .6)),
+            ("white",         16,    (.9, .9, .9)),
+            
+            ("dark green",    7,     (.3, .6, .3)),
+            ("soft green",    23,    (.4, .7, .4)),
+            ("lime green",    26,    (.6, .8, .4)),
+            ("light green",   14,    (.4, .9, .2)),
+            ("light green",   27,    (.4, .8, .2)),
+            ("light green",   19,    (.6,  1, .7)),
+            
+            ("dark purple",   30,    (.4, .3, .7)),
+            ("navy",          15,    (.2, .3, .5)),
+            ("dark blue",     5,     (.2, .2, .7)),
+            ("blue",          6,     (.2, .3,  1)),
+            ("soft blue",     29,    (.4, .5, .6)),
+            ("light blue",    18,    (.6, .7,  1)),
+            ("soft light blue",28,   (.3, .8, .8)),
+            
+            )
+            
+buttons_two = (
+            ("soft dark red", 11,    (.5, .2, .2)),
+            ("soft brown",    10,    (.6, .4, .4)),
+            ("dark red",      4,     (.7, .2, .2)),
+            ("red",           13,    (.9, .3, .3)),
+            
+            ("soft orange",   24,    (.8, .5, .3)),
+            ("light orange",  21,    (.9, .8, .6)),
+            ("soft yellow",   25,    (.8, .8, .3)), 
+            ("yellow",        17,    (.9, .9, .2)),
+            ("light yellow",  22,    (.9, .9, .6)),
+            
+            ("dark purple",   8,     (.3, .1, .3)),
+            ("soft dark brown",12,   (.4, .2, .3)),
+            ("dark pink",     31,    (.6, .2, .4)),
+            ("pink",          9,     (.8, .2, .8)),
+            ("light pink",    20,    ( 1, .8,  1)) 
+            )
 
 wv = 25
 winID = 'setNurbOverrideColorPanel'
-# Create Window with buttons for each color override
+#Create Window with buttons for each color override
 if cmds.window(winID, exists=True):
     cmds.deleteUI(winID)
 
@@ -28,46 +63,16 @@ cmds.window(winID, title='Override NURB Color')
 cmds.columnLayout(adjustableColumn=True, rowSpacing=5, width=200)
 
 cmds.frameLayout(label='NURBS Colours', labelAlign='top')
-cmds.rowColumnLayout(numberOfRows=1)
-cmds.button(label='', ann='black', width=wv, command=partial(setNurbOverrideColor, 1), bgc=(0, 0, 0))
-cmds.button(label='', ann='dark grey', width=wv, command=partial(setNurbOverrideColor, 2), bgc=(.2, .2, .2))
-cmds.button(label='', ann='light grey', width=wv, command=partial(setNurbOverrideColor, 3), bgc=(.6, .6, .6))
-cmds.button(label='', ann='white', width=wv, command=partial(setNurbOverrideColor, 16), bgc=(.9, .9, .9))
-
-cmds.button(label='', ann='dark green', width=wv, command=partial(setNurbOverrideColor, 7), bgc=(.3, .6, .3))
-cmds.button(label='', ann='soft green', width=wv, command=partial(setNurbOverrideColor, 23), bgc=(.4, .7, .4))
-cmds.button(label='', ann='lime green', width=wv, command=partial(setNurbOverrideColor, 26), bgc=(.6, .8, .4))
-cmds.button(label='', ann='light green', width=wv, command=partial(setNurbOverrideColor, 14), bgc=(.4, .9, .2))
-cmds.button(label='', ann='light green', width=wv, command=partial(setNurbOverrideColor, 27), bgc=(.4, .8, .4))
-cmds.button(label='', ann='light green', width=wv, command=partial(setNurbOverrideColor, 19), bgc=(.6, 1, .7))
-
-cmds.button(label='', ann='dark purple', width=wv, command=partial(setNurbOverrideColor, 30), bgc=(.4, .3, .7))
-cmds.button(label='', ann='navy', width=wv, command=partial(setNurbOverrideColor, 15), bgc=(.2, .3, .5))
-cmds.button(label='', ann='dark blue', width=wv, command=partial(setNurbOverrideColor, 5), bgc=(.2, .2, .7))
-cmds.button(label='', ann='blue', width=wv, command=partial(setNurbOverrideColor, 6), bgc=(.2, .3, 1))
-cmds.button(label='', ann='soft blue', width=wv, command=partial(setNurbOverrideColor, 29), bgc=(.4, .5, .6))
-cmds.button(label='', ann='light blue', width=wv, command=partial(setNurbOverrideColor, 18), bgc=(.6, .7, 1))
-cmds.button(label='', ann='soft light blue', width=wv, command=partial(setNurbOverrideColor, 28), bgc=(.3, .8, .8))
+cmds.rowColumnLayout(numberOfRows=1 )
+for button in buttons_one:
+    cmds.button(label='', ann=button[0], width=wv, command=partial(setNurbOverrideColor, button[1]), bgc=button[2])
 cmds.setParent('..')
 
-cmds.rowColumnLayout(numberOfRows=1)
+cmds.rowColumnLayout(numberOfRows=1 )
 
-cmds.button(label='', ann='soft dark red', width=wv, command=partial(setNurbOverrideColor, 11), bgc=(.5, .2, .2))
-cmds.button(label='', ann='soft brown', width=wv, command=partial(setNurbOverrideColor, 10), bgc=(.6, .4, .4))
 
-cmds.button(label='', ann='dark red', width=wv, command=partial(setNurbOverrideColor, 4), bgc=(.7, .2, .2))
-cmds.button(label='', ann='red', width=wv, command=partial(setNurbOverrideColor, 13), bgc=(.9, .3, .3))
-cmds.button(label='', ann='soft orange', width=wv, command=partial(setNurbOverrideColor, 24), bgc=(.8, .5, .3))
-cmds.button(label='', ann='light orange', width=wv, command=partial(setNurbOverrideColor, 21), bgc=(.9, .8, .6))
-cmds.button(label='', ann='soft yellow', width=wv, command=partial(setNurbOverrideColor, 25), bgc=(.8, .8, .3))
-cmds.button(label='', ann='yellow', width=wv, command=partial(setNurbOverrideColor, 17), bgc=(.9, .9, .2))
-cmds.button(label='', ann='light yellow', width=wv, command=partial(setNurbOverrideColor, 22), bgc=(.9, .9, .6))
-
-cmds.button(label='', ann='dark purple', width=wv, command=partial(setNurbOverrideColor, 8), bgc=(.3, .1, .3))
-cmds.button(label='', ann='soft dark brown', width=wv, command=partial(setNurbOverrideColor, 12), bgc=(.4, .2, .3))
-cmds.button(label='', ann='dark pink', width=wv, command=partial(setNurbOverrideColor, 31), bgc=(.6, .2, .4))
-cmds.button(label='', ann='pink', width=wv, command=partial(setNurbOverrideColor, 9), bgc=(.8, .2, .8))
-cmds.button(label='', ann='light pink', width=wv, command=partial(setNurbOverrideColor, 20), bgc=(1, .8, 1))
+for button in buttons_two:
+    cmds.button(label='', ann=button[0], width=wv, command=partial(setNurbOverrideColor, button[1]), bgc=button[2])
 cmds.setParent('..')
 
 cmds.showWindow()
