@@ -14,23 +14,15 @@ def vector_lerp(min, max, percent):
     return x, y, z
 
 
-pos1 = vector_lerp(cmds.xform(joints[0], q=1, ws=1, rp=1), cmds.xform(joints[1], q=1, ws=1, rp=1), .25)
-pos2 = vector_lerp(cmds.xform(joints[0], q=1, ws=1, rp=1), cmds.xform(joints[1], q=1, ws=1, rp=1), .5)
-pos3 = vector_lerp(cmds.xform(joints[0], q=1, ws=1, rp=1), cmds.xform(joints[1], q=1, ws=1, rp=1), .75)
+joint_count = 3
+joint_adder = 1.0 / (joint_count + 1)
+cur_jnt_count = 0.0
+cmds.select(d=1)
+for joint in range(1, joint_count+1):
+    jointend = cmds.joint(p=vector_lerp(cmds.xform(joints[0], q=1, ws=1, rp=1),
+                             cmds.xform(joints[1], q=1, ws=1, rp=1),
+                             cur_jnt_count))
 
-cmds.select(joints[0])
+    cur_jnt_count = cur_jnt_count + joint_adder
 
-cmds.joint(p=pos1)
-cmds.joint(p=pos2)
-cmds.joint(p=pos3)
-cmds.parent(joints[1], cmds.ls(sl=True, type='joint'))
-
-cmds.rename(cmds.select(cmds.listRelatives(parent=True)), joints[0] + "4")
-cmds.rename(cmds.select(cmds.listRelatives(parent=True)), joints[0] + "3")
-cmds.rename(cmds.select(cmds.listRelatives(parent=True)), joints[0] + "2")
-cmds.rename(joints[0], joints[0] + "1")
-
-# world orient for joint
-# currentJoint = cmds.ls(sl=True, type='joint')
-# cmds.joint(oj='none', e=True)
-# cmds.select(joints[1])
+cmds.parent(joints[1], jointend)
