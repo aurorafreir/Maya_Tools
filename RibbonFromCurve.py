@@ -1,6 +1,9 @@
 """
 Creates a ribbon rig from an input NURBS Curve and NURBS Surface, while handling inconsistent cv/joint placement
+Works by selecting either just a NURBS Curve and running, or selecting a NURBS Curve and Surface and running
 """
+
+# TODO Make code work with just a NURBS Surface selected
 
 # Standard library imports
 
@@ -10,20 +13,20 @@ import maya.cmds as cmds
 # Local application imports
 
 
-def create_follicle(oNurbs, uPos=0.0, vPos=0.0, pName=""):
-    # place and connect a follicle onto a nurbs surface.
-    oFoll = cmds.createNode('follicle')
-    cmds.connectAttr(oNurbs + ".local", oFoll + ".inputSurface")
+def create_follicle(nurbssurf, uPos=0.0, vPos=0.0):
+    # Create a follicle object, and attach it to the NURBS surface (nurbssurf)
+    follicle = cmds.createNode('follicle')
 
-    cmds.connectAttr(oNurbs + ".worldMatrix[0]", oFoll + ".inputWorldMatrix")
-    cmds.connectAttr(oFoll + ".outRotate", cmds.listRelatives(oFoll, p=1)[0] + ".r")
-    cmds.connectAttr(oFoll + ".outTranslate", cmds.listRelatives(oFoll, p=1)[0] + ".t")
-    cmds.setAttr(oFoll + ".parameterU", uPos)
-    cmds.setAttr(oFoll + ".parameterV", vPos)
-    cmds.setAttr(cmds.listRelatives(oFoll, p=1)[0] + ".t", lock=1)
-    cmds.setAttr(cmds.listRelatives(oFoll, p=1)[0] + ".r", lock=1)
+    cmds.connectAttr(nurbssurf + ".local", follicle + ".inputSurface")
+    cmds.connectAttr(nurbssurf + ".worldMatrix[0]", follicle + ".inputWorldMatrix")
+    for name, n in zip(["Rotate", "Translate"], ["r", "t"]):
+        cmds.connectAttr(follicle + ".out" + name, cmds.listRelatives(follicle, p=1)[0] + "." + n)
+    for uv, pos in zip(["U", "V"], [uPos, vPos]):
+        cmds.setAttr(follicle + ".parameter" + uv, pos)
+    for tr in ["t", "r"]:
+        cmds.setAttr(cmds.listRelatives(follicle, p=1)[0] + "." + tr, lock=1)
 
-    return oFoll
+    return follicle
 
 
 def ribbon_from_crv():
@@ -31,9 +34,9 @@ def ribbon_from_crv():
     nrbpatch = ""
 
     if not cmds.ls(sl=1):
-        raise Exception("No input curve or input surface found!")
+        raise Exception("Nothing selected! Select a NURBS Curve, or NURBS Curve and NURBS Surface.")
         return
-    # print cmds.listRelatives(cmds.ls(sl=1)[1], type="nurbsSurface", c=1)
+
     if cmds.objectType(cmds.listRelatives(cmds.ls(sl=1), type="nurbsCurve", c=1)) == "nurbsCurve":
         inputcrv = cmds.listRelatives(cmds.listRelatives(cmds.ls(sl=1), type="nurbsCurve", c=1)[0], p=1)[0]
 
@@ -44,11 +47,12 @@ def ribbon_from_crv():
         if cmds.objectType(nurbssurface) == "nurbsSurface":
             nrbpatch = cmds.listRelatives(cmds.listRelatives(cmds.ls(sl=1), type="nurbsSurface", c=1)[0], p=1)[0]
 
-
-    print("input curve = " + inputcrv)
+    if inputcrv:
+        print("input curve = " + inputcrv)
     if nrbpatch:
         print("input surface = " + nrbpatch)
 
+    # Set up groups for ribbon rig
     parentgrp = cmds.group(n="RibbonRig", em=1)
     for i in ["Joints", "Follicle"]:
         cmds.group(n=i + "_GRP", em=1, p=parentgrp)
@@ -63,8 +67,10 @@ def ribbon_from_crv():
         cmds.parent(newjoint, "Joints_GRP")
         cmds.select(d=1)
 
-    # create NURBS surface if one isn't selected
+    # Create NURBS surface if one isn't selected
+    # (Not recommended, very simplistic creation)
     if not nrbpatch:
+        raise Exception("It is recommended to create your own NURBS Surface, this Surface creation is very simplistic!")
         for i, x in zip(["A", "B"], [-.5, .5]):
             newcrv = cmds.duplicate(inputcrv, n=inputcrv + "_" + i)
             cmds.xform(newcrv, t=(0, 0, x), r=1)
@@ -75,12 +81,10 @@ def ribbon_from_crv():
 
 
     # Create follicles
-    foll_cur_name = 0
-    for i in range(0, inputcrv_cvs):
+    for i in range(inputcrv_cvs):
         oFoll = create_follicle(nrbpatch, 0, 0.5)
-        cmds.rename("follicle1", "follicle_" + str(foll_cur_name))
-        cmds.parent("follicle_" + str(foll_cur_name), "Follicle_GRP")
-        foll_cur_name = foll_cur_name + 1
+        cmds.rename("follicle1", "follicle_" + str(i))
+        cmds.parent("follicle_" + str(i), "Follicle_GRP")
     cmds.select(d=1)
 
 
@@ -88,6 +92,7 @@ def ribbon_from_crv():
     nrbpolypatch = cmds.nurbsToPoly(nrbpatch, ch=False)
     nrbpolypatch = nrbpolypatch[0]
 
+    # Get the NURBS Max V Range, so that follicles can be placed directly in the centre of it along the surface
     nrbvmax = cmds.getAttr(cmds.listRelatives(nrbpatch, s=1)[0] + ".minMaxRangeV")[0][1]
 
     for i in range(inputcrv_cvs):
@@ -98,29 +103,36 @@ def ribbon_from_crv():
         loc_pos = cmds.pointOnSurface(nrbpatch, u=i, v=nrbvmax / 2, position=True)
         cmds.xform(temp_loc, t=loc_pos, ws=1)
 
-
         # Create nearestPointOnPoly node
         nearest_point_node = cmds.createNode("nearestPointOnMesh")
-
+        
+        # Attach new poly mesh and temp locator into nearestPointOnMesh node
         cmds.connectAttr(nrbpolypatch + ".worldMesh", nearest_point_node + ".inMesh")
         cmds.connectAttr(temp_loc + ".t", nearest_point_node + ".inPosition")
-
+        
         paramu = cmds.getAttr(nearest_point_node + ".parameterU")
+        
+        # Make sure that paramu is never 0 or 1, as this can result in weird rotations
         if paramu == 0:
-            paramu = 0.001
+            paramu = 0.002
+        if paramu == 1:
+            paramu = 0.998
 
+        # Set the follicles' u position
         cmds.setAttr(temp_follicle + ".parameterU", paramu)
 
+        # Cleanup
         cmds.delete(nearest_point_node)
         cmds.delete(temp_loc)
 
+
         cmds.parentConstraint(temp_follicle, "joint_" + str(i))
 
+    # Final cleanup
     cmds.hide("Follicle_GRP")
     cmds.delete(nrbpolypatch)
     cmds.parent(nrbpatch, parentgrp)
     cmds.parent(inputcrv, parentgrp)
     cmds.hide(inputcrv)
-
 
 ribbon_from_crv()
