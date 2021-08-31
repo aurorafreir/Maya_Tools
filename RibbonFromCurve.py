@@ -37,15 +37,32 @@ def ribbon_from_crv():
         raise Exception("Nothing selected! Select a NURBS Curve, or NURBS Curve and NURBS Surface.")
         return
 
-    if cmds.objectType(cmds.listRelatives(cmds.ls(sl=1), type="nurbsCurve", c=1)) == "nurbsCurve":
-        inputcrv = cmds.listRelatives(cmds.listRelatives(cmds.ls(sl=1), type="nurbsCurve", c=1)[0], p=1)[0]
+    selected = cmds.ls(sl=1)
 
-    if not len(cmds.ls(sl=1)) == 1:
-        nurbssurface = cmds.listRelatives(cmds.ls(sl=1)[1], type="nurbsSurface", c=1)
-        if not len(nurbssurface) == 1: # Make sure that nurbssurface is only the first Shape node
-            nurbssurface = nurbssurface[0]
-        if cmds.objectType(nurbssurface) == "nurbsSurface":
-            nrbpatch = cmds.listRelatives(cmds.listRelatives(cmds.ls(sl=1), type="nurbsSurface", c=1)[0], p=1)[0]
+    # for i in selected:
+    curve = cmds.listRelatives(selected, type="nurbsCurve", c=1)
+    surface = cmds.listRelatives(selected, type="nurbsSurface", c=1)
+    print curve
+    print surface
+    if cmds.objectType(curve) == "nurbsCurve":
+        inputcrv = cmds.listRelatives(curve[0], p=1)[0]
+
+    if not len(surface) == 1: # Make sure that surface var is only the first shape node
+        surface = surface[0]
+    print surface
+    if cmds.objectType(surface) == "nurbsSurface":
+        nrbpatch = cmds.listRelatives(surface, p=1)[0]
+
+
+    # if cmds.objectType(cmds.listRelatives(cmds.ls(sl=1), type="nurbsCurve", c=1)) == "nurbsCurve":
+    #     inputcrv = cmds.listRelatives(cmds.listRelatives(cmds.ls(sl=1), type="nurbsCurve", c=1)[0], p=1)[0]
+
+    # if not len(cmds.ls(sl=1)) == 1:
+    #     nurbssurface = cmds.listRelatives(cmds.ls(sl=1), type="nurbsSurface", c=1)
+    #     if not len(nurbssurface) == 1: # Make sure that nurbssurface is only the first Shape node
+    #         nurbssurface = nurbssurface[0]
+    #     if cmds.objectType(nurbssurface) == "nurbsSurface":
+    #         nrbpatch = cmds.listRelatives(cmds.listRelatives(cmds.ls(sl=1), type="nurbsSurface", c=1)[0], p=1)[0]
 
     if inputcrv:
         print("input curve = " + inputcrv)
@@ -82,8 +99,8 @@ def ribbon_from_crv():
 
     # Create follicles
     for i in range(inputcrv_cvs):
-        oFoll = create_follicle(nrbpatch, 0, 0.5)
-        cmds.rename("follicle1", "follicle_" + str(i))
+        new_follicle = create_follicle(nrbpatch, 0, 0.5)
+        cmds.rename(new_follicle, "follicle_" + str(i))
         cmds.parent("follicle_" + str(i), "Follicle_GRP")
     cmds.select(d=1)
 
