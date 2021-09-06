@@ -33,11 +33,11 @@ def shape_grabber():
                 
 shape_grabber()
 
-"""
-Usage in scripts:
 
+# Usage in scripts:
+"""
 created_dictionary = {
-    
+
 }
 
 newcurves = []
