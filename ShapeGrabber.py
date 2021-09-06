@@ -41,7 +41,7 @@ created_dictionary = {
 }
 
 newcurves = []
-for i, x in NAME_OF_SELECTED_OBJECT.items():
+for i, x in created_dictionary.items():
     curve = cmds.curve(d=5, p=x)
     newcurves.append(curve)
 
