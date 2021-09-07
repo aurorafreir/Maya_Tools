@@ -4,7 +4,6 @@ import maya.cmds as cmds
 def shape_grabber():
     if not cmds.ls(sl=1):
         raise Exception("Nothing Selected!")
-        return
     
     shapes = {  }
     selected = cmds.ls(sl=1)
