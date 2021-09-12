@@ -67,20 +67,12 @@ def create_follicles_on_surf():
         cmds.rename(cmds.listRelatives(new_follicle, p=1)[0], flcname)
         cmds.parent(flcname, "Follicle_GRP")
 
-
-
-        temp_loc = cmds.spaceLocator(n="tempLoc_" + str(i))[0]
-        cmds.select(d=1)
-        loc_pos = cmds.pointOnSurface(nrbpatch, u=countup, v=nrbvmid, position=True)
-        countup = countup + 1
-        cmds.xform(temp_loc, t=loc_pos, ws=1)
-
         # Create nearestPointOnPoly node
         nearest_point_node = cmds.createNode("nearestPointOnMesh")
         
         # Attach new poly mesh and temp locator into nearestPointOnMesh node
         cmds.connectAttr(nrbpolypatch + ".worldMesh", nearest_point_node + ".inMesh")
-        cmds.connectAttr(temp_loc + ".t", nearest_point_node + ".inPosition")
+        cmds.connectAttr(i + ".t", nearest_point_node + ".inPosition")
         
         paramu = cmds.getAttr(nearest_point_node + ".parameterU")
         
@@ -95,10 +87,8 @@ def create_follicles_on_surf():
 
         # Cleanup
         cmds.delete(nearest_point_node)
-        cmds.delete(temp_loc)
 
-
-        cmds.parentConstraint(flcname, i)
+        cmds.parentConstraint(flcname, i, mo=1)
 
         cmds.parent(i, "Joints_GRP")
         
