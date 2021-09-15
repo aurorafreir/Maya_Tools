@@ -72,10 +72,12 @@ def import_anim(name="", force=False):
 # Usage in scripts:
 # Exports the current scene data to /data/ as the name of the file + "_Anim.json"
 """
-export_anim()
+import ExportImportAnim as EIA
+EIA.export_anim()
 """
 
 # Imports the set filename from the /data/ folder and applies it to the current scene
 """
-import_anim(name="PoseTests_v0002_Anim.json", force=False)
+import ExportImportAnim as EIA
+EIA.import_anim(name="PoseTests_v0002_Anim.json", force=False)
 """
