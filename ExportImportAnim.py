@@ -53,7 +53,7 @@ def export_anim():
 
             if keytimes and keyvalues:
                 keytimevalue = []
-                # Sort data to be [[frame, value], [frame, value], [frame, value]]
+                # Reformat data to be [[frame, value, etc, ], [frame, value, etc, ], [frame, value, etc, ]]
                 for time, value, itt, ott, ia, oa, ix, iy, ox, oy in zip(keytimes, keyvalues, intangent, outtangent, inangle, outangle, ix, iy, ox, oy):
                     keytimevalue.append([time, value, itt, ott, ia, oa, ix, iy, ox, oy])
                 keydata = {ctrl + "." + attr : keytimevalue}
@@ -85,8 +85,6 @@ def import_anim(name="", force=False):
         for ctrlattr in item:
             ctrl = ctrlattr.split(".")[-2]
             attr = ctrlattr.split(".")[-1]
-
-            print item[ctrlattr]
 
             # Skip the current attribute if it exists, and force is off
             # Otherwise, delete the channel and then import the data to that channel
