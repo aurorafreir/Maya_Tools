@@ -5,7 +5,7 @@ Script used for exporting and importing all the controller animation in a scene
 # Standard library imports
 import json
 import sys
-import os
+import os.path
 
 # Third party imports
 import maya.cmds as cmds
@@ -22,35 +22,40 @@ def export_anim():
     filename = os.path.basename(filepath)
     raw_name, extension = os.path.splitext(filename)
 
-    # Create empty json file to dump data to
     jsonfile = projectDirectory + "data/" + raw_name + "_Anim.json"
-    with open(jsonfile, "w") as outfile:
-        pass
 
     # Gather all control curves in scene
     controls = []
     for ctrl in cmds.ls(type="nurbsCurve"):
-        tempname = (cmds.listRelatives(ctrl, p=1)[0])
+        ctrlcrvparent = (cmds.listRelatives(ctrl, p=1)[0])
         
         # Make sure that duplicates don't get added to the controls list
-        if tempname not in controls:
-            controls.append(tempname)
+        if ctrlcrvparent not in controls:
+            controls.append(ctrlcrvparent)
 
     export_data = []
 
     for ctrl in controls:
-        ctrlattrs = [ctrl]
         for attr in cmds.listAttr(ctrl, k=1, u=1):
             # Get all keyframe times, and keyframe values as their own lists
             # [[frame], [frame], [frame]]
             # [[value], [value], [value]]
-            keytimes = cmds.keyframe(ctrl + "." + attr, q=1, timeChange=1)
-            keyvalues = cmds.keyframe(ctrl + "." + attr, q=1, valueChange=1)
+            ctrlattr = ctrl + "." + attr
+            keytimes = cmds.keyframe(ctrlattr, q=1, timeChange=1)
+            keyvalues = cmds.keyframe(ctrlattr, q=1, valueChange=1)
+
+            intangent = cmds.keyTangent(ctrlattr, q=1, itt=1)
+            outtangent = cmds.keyTangent(ctrlattr, q=1, ott=1)
+            inangle = cmds.keyTangent(ctrlattr, q=1, ia=1)
+            outangle = cmds.keyTangent(ctrlattr, q=1, oa=1)
+            ix, iy = cmds.keyTangent(ctrlattr, q=1, ix=1), cmds.keyTangent(ctrlattr, q=1, iy=1)
+            ox, oy = cmds.keyTangent(ctrlattr, q=1, ox=1), cmds.keyTangent(ctrlattr, q=1, oy=1)
+
             if keytimes and keyvalues:
                 keytimevalue = []
                 # Sort data to be [[frame, value], [frame, value], [frame, value]]
-                for time, value in zip(keytimes, keyvalues):
-                    keytimevalue.append([time, value])
+                for time, value, itt, ott, ia, oa, ix, iy, ox, oy in zip(keytimes, keyvalues, intangent, outtangent, inangle, outangle, ix, iy, ox, oy):
+                    keytimevalue.append([time, value, itt, ott, ia, oa, ix, iy, ox, oy])
                 keydata = {ctrl + "." + attr : keytimevalue}
                 
                 export_data.append(keydata)
@@ -58,28 +63,69 @@ def export_anim():
 
     with open(jsonfile, "w") as outfile:
         json.dump(export_data, outfile, indent=4)
+    
+    print("Exported correctly to: " + jsonfile)
 
 
 def import_anim(name="", force=False):
     if not name:
-        raise Exception("Must set the name of the file in the name arg!")
+        raise Exception("Must set the name of the file in the name arg!") 
     
     # Get current project directory and scene name
     projectDirectory = cmds.workspace(q=True, rd=True)
-
     jsonfile = projectDirectory + "data/" + name
-    print jsonfile
+
+    if not os.path.isfile(jsonfile):
+        raise Exception("File: " + jsonfile + " - not found!")
+
     with open(jsonfile, "r") as infile:
         data = json.load(infile)
+
     for item in data:
         for ctrlattr in item:
-            for keyframedata in item[ctrlattr]:
+            ctrl = ctrlattr.split(".")[-2]
+            attr = ctrlattr.split(".")[-1]
+
+            print item[ctrlattr]
+
+            # Skip the current attribute if it exists, and force is off
+            # Otherwise, delete the channel and then import the data to that channel
+            if cmds.listConnections(ctrl + "." + attr, type="animCurve", s=1):
+                # Check if attribute is already animated
+                if force:
+                    print("channel exists for: " + ctrl + "." + attr + " - deleting and replacing with file data")
+                    cmds.delete(cmds.listConnections(ctrl + "." + attr, type="animCurve", s=1))
+                else:
+                    continue
+
+            for keyframedata in item[ctrlattr]:   
                 frame = keyframedata[0]
                 value = keyframedata[1]
-                # inputtangent = keyframedata[2]
-                # outtangent = keyframedata[3]
-                # keytype = keyframedata[4]
-                cmds.setKeyframe(ctrlattr.split(".")[-2], at=ctrlattr.split(".")[-1], t=frame, v=value)
+
+                intangent = keyframedata[2]
+                outtangent = keyframedata[3]
+                inangle = keyframedata[4]
+                outangle = keyframedata[5]
+
+                ix, iy = keyframedata[6], keyframedata[7]
+                ox, oy = keyframedata[8], keyframedata[9]
+
+                cmds.setKeyframe(ctrl, at=attr, t=frame, v=value)
+
+                if outtangent == "step":
+                    cmds.keyTangent(ctrl, at=attr, t=(frame, frame),
+                        itt=intangent, ott=outtangent)
+                elif inangle or outangle:
+                    cmds.keyTangent(ctrl, at=attr, t=(frame, frame),
+                        itt=intangent, ott=outtangent,
+                        ia=inangle, oa=outangle)
+                elif ix or iy or ox or iy:
+                    cmds.keyTangent(ctrl, at=attr, t=(frame, frame),
+                        itt=intangent, ott=outtangent,
+                        ix=ix, iy=iy,
+                        ox=ox, oy=oy)
+
+    print("Imported correctly from: " + jsonfile)
 
 
 
