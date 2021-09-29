@@ -32,31 +32,31 @@ def export_anim():
     export_data = []
 
     for ctrl in cmds.ls(type="nurbsCurve"):
-        ctrlcrvparent = cmds.listRelatives(ctrl, parent=1)[0]
+        ctrlcrvparent = cmds.listRelatives(ctrl, parent=True)[0]
         
         # Make sure that duplicates don't get added to the controls list
         if ctrlcrvparent in controls:
             continue
         controls.append(ctrlcrvparent)
 
-        for attr in cmds.listAttr(ctrlcrvparent, keyable=1, unlocked=1):
+        for attr in cmds.listAttr(ctrlcrvparent, keyable=True, unlocked=True):
             # Get all keyframe times, and keyframe values as their own lists
             # [[frame], [frame], [frame]]
             # [[value], [value], [value]]
             ctrl_attr = "{}.{}".format(ctrlcrvparent, attr)
             
 
-            key_times = cmds.keyframe(ctrl_attr, query=1, timeChange=1)
-            key_values = cmds.keyframe(ctrl_attr, query=1, valueChange=1)
+            key_times = cmds.keyframe(ctrl_attr, query=True, timeChange=True)
+            key_values = cmds.keyframe(ctrl_attr, query=True, valueChange=True)
 
-            in_tangents = cmds.keyTangent(ctrl_attr, query=1, itt=1)
-            out_tangents = cmds.keyTangent(ctrl_attr, query=1, ott=1)
-            in_angle = cmds.keyTangent(ctrl_attr, query=1, ia=1)
-            out_angle = cmds.keyTangent(ctrl_attr, query=1, oa=1)
-            in_tangents_x  = cmds.keyTangent(ctrl_attr, query=1, ix=1)
-            in_tangents_y  = cmds.keyTangent(ctrl_attr, query=1, iy=1)
-            out_tangents_x = cmds.keyTangent(ctrl_attr, query=1, ox=1)
-            out_tangents_y = cmds.keyTangent(ctrl_attr, query=1, oy=1)
+            in_tangents = cmds.keyTangent(ctrl_attr, query=True, inTangentType=True)
+            out_tangents = cmds.keyTangent(ctrl_attr, query=True, outTangentType=True)
+            in_angle = cmds.keyTangent(ctrl_attr, query=True, inAngle=True)
+            out_angle = cmds.keyTangent(ctrl_attr, query=True, outAngle=True)
+            in_tangents_x  = cmds.keyTangent(ctrl_attr, query=True, ix=True)
+            in_tangents_y  = cmds.keyTangent(ctrl_attr, query=True, iy=True)
+            out_tangents_x = cmds.keyTangent(ctrl_attr, query=True, ox=True)
+            out_tangents_y = cmds.keyTangent(ctrl_attr, query=True, oy=True)
 
             if key_times and key_values:
                 keytimevalue = []
@@ -109,11 +109,11 @@ def import_anim(name="", abspath="", force=False):
 
             # Skip the current attribute if it exists, and force is off
             # Otherwise, delete the channel and then import the data to that channel
-            anim_connections = cmds.listConnections(ctrl + "." + attr, type="animCurve", s=1)
+            anim_connections = cmds.listConnections("{}.{}".format(ctrl, attr), type="animCurve", source=True)
             if anim_connections:
                 # Check if attribute is already animated
                 if force:
-                    print("channel exists for: " + ctrl + "." + attr + " - deleting and replacing with file data")
+                    print("channel exists for: {}.{} - deleting and replacing with file data".format(ctrl, attr))
                     cmds.delete(anim_connections)
                 else:
                     continue
@@ -129,7 +129,7 @@ def import_anim(name="", abspath="", force=False):
                 out_tangents_x = keyframedata["ox"]
                 out_tangents_y = keyframedata["oy"]
 
-                cmds.setKeyframe(ctrl, attribute=attr, time=time, v=keyframedata["value"])
+                cmds.setKeyframe(ctrl, attribute=attr, time=time, value=keyframedata["value"])
 
                 kwargs = {
                     "at": attr,
