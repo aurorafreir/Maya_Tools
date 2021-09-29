@@ -86,7 +86,7 @@ def export_anim():
 
 def import_anim(name="", abspath="", force=False):
     if not name:
-        raise Exception("Must set the name of the fyTanile in the name arg!") 
+        raise Exception("Must set the name of the file in the name arg!") 
     
     if abspath:
         jsonfile = abspath
@@ -97,7 +97,7 @@ def import_anim(name="", abspath="", force=False):
 
 
     if not os.path.isfile(jsonfile):
-        raise OSError("File: " + jsonfile + " - not found!")
+        raise OSError("File: {} - not found!".format(jsonfile))
 
     with open(jsonfile, "r") as infile:
         data = json.load(infile)
