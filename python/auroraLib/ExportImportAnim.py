@@ -5,7 +5,6 @@ Script used for exporting and importing all the controller animation in a scene
 # Standard library imports
 import json
 import os.path
-import sys
 
 # Third party imports
 from maya import cmds
