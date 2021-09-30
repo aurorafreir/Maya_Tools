@@ -1,5 +1,9 @@
+
+# third parties import
+import maya.cmds as cmds
+
+
 def get_undeformed_mesh():
-    import maya.cmds as cmds
 
     SelectedObj = cmds.ls(sl=True, sn=True)
 
