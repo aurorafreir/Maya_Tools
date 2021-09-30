@@ -14,3 +14,5 @@ def outliner_focus():
 outliner_focus()
 cmds.select(hi=1)
 mel.eval('OutlinerRevealSelected;')
+
+change
