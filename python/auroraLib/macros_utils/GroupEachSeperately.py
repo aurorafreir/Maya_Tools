@@ -1,9 +1,22 @@
-# Set as Ctrl+Shift+G
+"""
+Script used to group each selected object in it's own seperate group
+"""
 
-import maya.cmds as cmds
+# Standard library imports
 
-sel = cmds.ls(sl=1)
 
-for i in sel:
-    cmds.select(i)
-    cmds.group(n='GRP_{}'.format(i).replace('JNT_',''))
+# Third party imports
+from maya import cmds
+
+# Local application imports
+
+
+
+def GroupEachSeperately():
+    sel = cmds.ls(selection=1)
+
+    for object in sel:
+        cmds.select(object)
+        cmds.group(name='GRP_{}'.format(object).replace('JNT_',''))
+
+GroupEachSeperately()
