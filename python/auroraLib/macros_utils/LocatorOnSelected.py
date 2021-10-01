@@ -1,6 +1,16 @@
-import maya.cmds as cmds
+"""
+Script to create a locator on each of the selected items (objects or components)
+"""
 
-selected = cmds.ls(sl=True)
+# Standard library imports
+
+
+# Third party imports
+from maya import cmds
+
+# Local application imports
+
+
 
 def lerp(min, max, percent):  # linear_interpolate
     # Return float between min and max based on the percent (0-1)
@@ -15,12 +25,17 @@ def vector_lerp(min, max, percent):  # vector_linear_interpolate
 
     return x, y, z
 
-if selected:
-    for i in selected:
-        min = cmds.xform(i, absolute=True, ws=True, q=True, bb=True)[0:3]
-        max = cmds.xform(i, absolute=True, ws=True, q=True, bb=True)[3:6]
-        bboxmid = vector_lerp(min, max, 0.5)
-        newloc = cmds.spaceLocator(n="new_loc#")
-        cmds.xform(newloc, t=bboxmid)
-else:
-    pass
+def LocatorOnSelected():
+    selected = cmds.ls(selection=True)
+
+    if selected:
+        for item in selected:
+            min = cmds.xform(item, absolute=True, worldSpace=True, query=True, boundingBox=True)[0:3]
+            max = cmds.xform(item, absolute=True, worldSpace=True, query=True, boundingBox=True)[3:6]
+            bboxmid = vector_lerp(min, max, 0.5)
+            newloc = cmds.spaceLocator(name="new_loc#")
+            cmds.xform(newloc, translate=bboxmid)
+    else:
+        raise Exception("Make sure to select objects or components!")
+
+LocatorOnSelected()
