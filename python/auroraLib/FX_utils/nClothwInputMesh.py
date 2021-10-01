@@ -1,31 +1,42 @@
-import maya.cmds as cmds
-import maya.mel as mm
+"""
+Script 
+"""
+
+# Standard library imports
+
+# Third party imports
+from maya import cmds
+from maya import mel
+
+# Local application imports
+
+
 
 def nClothwInputMesh():
-    mesh = cmds.ls(sl=True)[0]
+    mesh = cmds.ls(selection=True)[0]
     dup_mesh = cmds.duplicate(mesh)
-    mesh_parent = cmds.listRelatives(p=1, f=1)
+    mesh_parent = cmds.listRelatives(parent=True, fullPath=True)
 
     all_nodes = cmds.ls()
-    mm.eval('doCreateNCloth 0')
+    mel.eval('doCreateNCloth 0')
     new_nodes = cmds.ls()
     diff = list(set(new_nodes)-set(all_nodes))
 
     # Rename initial mesh to have suffix _inMesh and output mesh with _outMesh
-    cmds.rename(mesh, mesh+"_inMesh")
-    cmds.rename(dup_mesh[0], mesh+"_outMesh")
+    cmds.rename(mesh, "{}_inMesh".format(mesh))
+    cmds.rename(dup_mesh[0], "{}_outMesh".format(mesh))
 
     # Sets the inMesh shape as the inputMesh for the nCloth node
-    cmds.listConnections(diff[1]+".inputMesh", s=True)
-    cmds.connectAttr(mesh+"_inMeshShape.worldMesh", diff[1]+".inputMesh", f=True)
+    cmds.listConnections("{}.inputMesh".format(diff[1]), shapes=True)
+    cmds.connectAttr("{}_inMeshShape.worldMesh".format(mesh), "{}.inputMesh".format(diff[1]), force=True)
 
     # Renames the nCloth node to the mesh name + _nCloth
-    nCloth = cmds.rename(diff[1], mesh+"_nCloth")
+    nCloth = cmds.rename(diff[1], "{}_nCloth".format(mesh))
 
     # groups the nCloth node, inMesh, and outMesh, and parents them where the inMesh was before
-    cmds.group(mesh+"_nCloth", mesh+"_inMesh", mesh+"_outMesh", n=mesh)
+    cmds.group("{}_nCloth".format(mesh), "{}_inMesh".format(mesh), "{}_outMesh".format(mesh), name=mesh)
     cmds.parent(mesh, mesh_parent)
     # hides the initial mesh
-    cmds.hide(mesh+"_inMesh")
+    cmds.hide("{}_inMesh".format(mesh))
 
 nClothwInputMesh()
