@@ -103,9 +103,9 @@ def import_anim(name="", abs_path="", force=False):
         data = json.load(in_file)
 
     for item in data:
-        for ctrlattr in item:
-            ctrl = ctrlattr.split(".")[-2]
-            attr = ctrlattr.split(".")[-1]
+        for ctrl_attr in item:
+            ctrl = ctrl_attr.split(".")[-2]
+            attr = ctrl_attr.split(".")[-1]
 
             # Skip the current attribute if it exists, and force is off
             # Otherwise, delete the channel and then import the data to that channel
@@ -118,7 +118,7 @@ def import_anim(name="", abs_path="", force=False):
                 else:
                     continue
 
-            for keyframe_data in item[ctrlattr]:
+            for keyframe_data in item[ctrl_attr]:
                 time = keyframe_data["time"]
                 in_tangents = keyframe_data["itt"]
                 out_tangents = keyframe_data["ott"]
