@@ -1,5 +1,6 @@
 """
-Script 
+Script to make an nCloth mash out of the current object, with the original as an in mesh,
+and the new as the out (simulated) mesh
 """
 
 # Standard library imports
