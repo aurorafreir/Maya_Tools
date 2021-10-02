@@ -63,7 +63,7 @@ def create_follicles_on_surf():
         flc_name = jnt.replace("_JNT", "_FLC")
 
         new_follicle = create_follicle(nrb_patch, 0, .5)
-        cmds.rename(cmds.listRelatives(new_follicle, p=1)[0], flc_name)
+        cmds.rename(cmds.listRelatives(new_follicle, parent=1)[0], flc_name)
         cmds.parent(flc_name, "Follicle_GRP")
 
         # Create nearestPointOnPoly node
