@@ -1,5 +1,5 @@
 """
-Script used for exporting and importing all the controller animation in a scene
+Script used for creating in-between joints between the two selected joints at regular intervals
 """
 
 # Standard library imports
@@ -11,7 +11,7 @@ from maya import cmds
 # Local application imports
 
 
-def split_joints():
+def split_joints(joint_count=3):
     joints = cmds.ls(selection=True, type='joint')
 
 
@@ -26,7 +26,6 @@ def split_joints():
         return x, y, z
 
 
-    joint_count = 3
     joint_adder = 1.0 / (joint_count + 1)
     cur_jnt_count = 0.0
     cmds.select(d=1)
