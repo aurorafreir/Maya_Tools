@@ -1,5 +1,6 @@
 """
-Script get the mesh of an object, 
+Script get the mesh of an object, before any skinCluster or deformers
+Essentially just grabs the bind "_Orig" version of the mesh
 """
 
 # Standard library imports
