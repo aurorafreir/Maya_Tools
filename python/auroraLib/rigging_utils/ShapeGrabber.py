@@ -1,20 +1,34 @@
-import maya.cmds as cmds
+"""
+Script to print out a dictionary that can be used in other scripts to
+create the same nurbs curves through the cmds.curve function
+"""
+
+# Standard library imports
+
+
+# Third party imports
+from maya import cmds
+
+# Local application imports
+
 
 
 def shape_grabber():
-    if not cmds.ls(sl=1):
+    if not cmds.ls(selection=True):
         raise Exception("Nothing Selected!")
     
     shapes = {  }
-    selected = cmds.ls(sl=1)
-    
-    for i in cmds.listRelatives(cmds.ls(sl=1), c=1):
-        shapecvs = []
-        for x in range(cmds.getAttr(i + '.cp', s=1)):
-            ppos = cmds.pointPosition(i + ".cp[{}]".format(x), l=1)
-            shapecvs.append(ppos)
-        shapes[i] = shapecvs
-            
+    selected = cmds.ls(selection=True)
+    try:
+        for shape in cmds.listRelatives(selected, children=True):
+            shapecvs = []
+            for x in range(cmds.getAttr('{}.cp'.format(shape), size=True)):
+                ppos = cmds.pointPosition("{}.cp[{}]".format(shape, x), local=True)
+                shapecvs.append(ppos)
+            shapes[shape] = shapecvs
+    except TypeError:
+        raise Exception("More than one object with the name of the currently selected object")
+
     newcurves = []
     
     if len(selected) == 0:
@@ -24,13 +38,10 @@ def shape_grabber():
     
     print("---- Start selection from next row ----")
     print(crvname + " = {")
-    for i, x in shapes.items():
-        print("'{}':{},".format(i, x))
+    for shape, point_data in shapes.items():
+        print("'{}':{},".format(shape, point_data))
     print("}")
     print("---- End selection from previous row ----")
-
-                
-shape_grabber()
 
 
 # Usage in scripts:

@@ -1,5 +1,6 @@
 """
-Script get the mesh of an object, 
+Script get the mesh of an object, before any skinCluster or deformers
+Essentially just grabs the bind "_Orig" version of the mesh
 """
 
 # Standard library imports
@@ -12,29 +13,29 @@ from maya import cmds
 
 
 def get_undeformed_mesh():
-    SelectedObj = cmds.ls(selection=True, sn=True)
+    selected_obj = cmds.ls(selection=True, shortNames=True)
 
-    if SelectedObj:
+    if selected_obj:
     # get material
-        SelectedObj = cmds.ls(selection=True, dag=True, shape=True)[0]
-        shadeEng = cmds.listConnections(SelectedObj , type="shadingEngine")
-        SelectedObjMaterial = cmds.ls(cmds.listConnections(shadeEng), materials=True)
-        print SelectedObjMaterial[0]
+        selected_obj = cmds.ls(selection=True, dag=True, shape=True)[0]
+        shade_eng = cmds.listConnections(selected_obj , type="shadingEngine")
+        selected_obj_material = cmds.ls(cmds.listConnections(shade_eng), materials=True)
+        print selected_obj_material[0]
     # duplicate object and switch it to original shape node
-        cmds.duplicate(n="{}Blendshape".format(SelectedObj))
-        cmds.setAttr("{}BlendshapeShapeOrig.intermediateObject".format(SelectedObj), 0)
-        cmds.delete("{}BlendshapeShape".format(SelectedObj))
+        cmds.duplicate(name="{}Blendshape".format(selected_obj))
+        cmds.setAttr("{}BlendshapeShapeOrig.intermediateObject".format(selected_obj), 0)
+        cmds.delete("{}BlendshapeShape".format(selected_obj))
     # assign material
-        cmds.select('{}Blendshape'.format(SelectedObj[0]))
-        cmds.select(SelectedObjMaterial[0], add=True)
-        SelectedObjShaderGroup = cmds.listConnections(SelectedObjMaterial[0])
-        print SelectedObjShaderGroup[0]
+        cmds.select('{}Blendshape'.format(selected_obj[0]))
+        cmds.select(selected_obj_material[0], add=True)
+        selected_obj_shadergroup = cmds.listConnections(selected_obj_material[0])
+        print selected_obj_shadergroup[0]
         cmds.hyperShade( assign='aiStandardSurface1SG')
     # unlock translate attrs
         axis = ['X', 'Y', 'Z']
         attrs = ['translate', 'rotate', 'scale']
         for ax in axis:
             for attr in attrs:
-               cmds.setAttr('{}Blendshape.{}{}'.format(SelectedObj, attr, ax), lock=0)
+               cmds.setAttr('{}Blendshape.{}{}'.format(selected_obj, attr, ax), lock=True)
 
 get_undeformed_mesh()

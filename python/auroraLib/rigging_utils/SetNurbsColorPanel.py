@@ -1,14 +1,25 @@
-import maya.cmds as cmds
+"""
+Creates a simple GUI to set the colour of selected NURBS shapes
+"""
+
+# Standard library imports
 from functools import partial
+
+# Third party imports
+from maya import cmds
+
+# Local application imports
+
+
 
 #Function to set colour
 def setNurbOverrideColor(Color, self):
-    ctrl = cmds.ls(sl=True)
+    ctrl = cmds.ls(selection=True)
     for control in ctrl:
-        ctrlshapes = cmds.listRelatives(s=1, f=1)
-        for shape in ctrlshapes:
-            cmds.setAttr(shape + ".overrideEnabled",1)
-            cmds.setAttr(shape + ".overrideColor", Color)
+        ctrl_shapes = cmds.listRelatives(shapes=1, fullPath=1)
+        for shape in ctrl_shapes:
+            cmds.setAttr("{}.overrideEnabled".format(shape), 1)
+            cmds.setAttr("{}.overrideColor".format(shape), Color)
             
             
 buttons_one = (
@@ -53,6 +64,7 @@ buttons_two = (
             ("light pink",    20,    ( 1, .8,  1)) 
             )
 
+
 wv = 25
 winID = 'setNurbOverrideColorPanel'
 #Create Window with buttons for each color override
@@ -63,16 +75,18 @@ cmds.window(winID, title='Override NURB Color')
 cmds.columnLayout(adjustableColumn=True, rowSpacing=5, width=200)
 
 cmds.frameLayout(label='NURBS Colours', labelAlign='top')
+
+
 cmds.rowColumnLayout(numberOfRows=1 )
 for button in buttons_one:
-    cmds.button(label='', ann=button[0], width=wv, command=partial(setNurbOverrideColor, button[1]), bgc=button[2])
+    cmds.button(label='', annotation=button[0], width=wv, command=partial(setNurbOverrideColor, button[1]), backgroundColor=button[2])
 cmds.setParent('..')
+
 
 cmds.rowColumnLayout(numberOfRows=1 )
-
-
 for button in buttons_two:
-    cmds.button(label='', ann=button[0], width=wv, command=partial(setNurbOverrideColor, button[1]), bgc=button[2])
+    cmds.button(label='', annotation=button[0], width=wv, command=partial(setNurbOverrideColor, button[1]), backgroundColor=button[2])
 cmds.setParent('..')
+
 
 cmds.showWindow()

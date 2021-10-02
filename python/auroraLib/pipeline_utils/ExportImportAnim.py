@@ -13,9 +13,6 @@ from maya import cmds
 # Local application imports
 
 
-### todo
-# TODO optimize data export/import, e.g. if stepped them no need for oa, ox, oy
-
 
 def export_anim():    
     # Get current project directory and scene name
