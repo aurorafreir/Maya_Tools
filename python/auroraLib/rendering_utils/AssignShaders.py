@@ -4,9 +4,8 @@ def assign_shader(shader="surface"):
     sel = pm.selected()
     if not sel:
         raise Exception("Nothing selected!")
-    print(shader)
+    
     if "surface" in shader:
-        print("yeet")
         ai_shader = pm.rendering.shadingNode("aiStandardSurface", asShader=True)
     elif "hair" in shader:
         ai_shader = pm.rendering.shadingNode("aiStandardHair", asShader=True)
@@ -16,6 +15,7 @@ def assign_shader(shader="surface"):
     for obj in sel:
         pm.select(obj)
         pm.hyperShade(assign=ai_shader)
+        print(f"assigned {ai_shader} to {obj}")
     pm.select(sel)
         
 assign_shader()
