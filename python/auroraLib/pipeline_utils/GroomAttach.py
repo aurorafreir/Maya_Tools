@@ -11,15 +11,11 @@ import maya.cmds
 # LOCAL APP IMPORTS
 
 
-def groom_attach():
+def groom_attach(rig_ns="", groom_ns="", top_level_joint=""):
 
-    # todo rewrite this to just take two namespaces and one joint name
-    groom_tlj = "GROOM_SCENE:spine_C0_0_jnt"
-    rig_tlj   = "RIG_SCENE:spine_C0_0_jnt"
-    
-    groom_ns  = groom_tlj.split(":")[0]
-    rig_ns    = rig_tlj.split(":")[0]
-    
+    rig_tlj   = f"{rig_ns}:{top_level_joint}"
+    groom_tlj = f"{groom_ns}:{top_level_joint}"
+
     rig_joints= maya.cmds.listRelatives(rig_tlj, children=True, allDescendents=True)
     rig_joints.insert(0, rig_tlj)
     
@@ -27,10 +23,8 @@ def groom_attach():
         driven = "{}:{}".format(groom_ns, x.split(":")[1])
         driver = x
 
-        # todo replace this with a proper check instead of try:except
-        try:
+        if maya.cmds.objExists(driven):
             # todo replace this with a matrix constraint for performance and scene cleanliness
             maya.cmds.parentConstraint(driver, driven)
-        except:
-            pass
+
         print("Constrained {} to {}".format(driver, driven))
