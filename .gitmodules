@@ -1,0 +1,3 @@
+[submodule "SkeletonConnector"]
+ path = SkeletonConnector
+ url = https://github.com/CatAndDogSoup/SkeletonConnector.git
