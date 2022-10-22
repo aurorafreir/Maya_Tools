@@ -1,3 +1,6 @@
 [submodule "SkeletonConnector"]
- path = SkeletonConnector
- url = https://github.com/CatAndDogSoup/SkeletonConnector.git
+	path = SkeletonConnector
+	url = https://github.com/CatAndDogSoup/SkeletonConnector
+[submodule "mGearScripts"]
+	path = mGearScripts
+	url = https://github.com/CatAndDogSoup/mGearScripts

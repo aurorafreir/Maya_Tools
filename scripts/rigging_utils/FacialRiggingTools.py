@@ -10,17 +10,18 @@ An example of how to use them is at the end :)
 # STANDARD LIBRARY IMPORTS
 import pymel.core as pm
 
+
 # LOCAL APPLICATION IMPORTS
 
 
 class FacialRiggingTools:
-    def __init__(self, main_group:str, head_jnt:str):
+    def __init__(self, main_group: str, head_jnt: str):
         self.main_group = main_group
         self.head_jnt = head_jnt
 
         self.attr_settings = {"keyable": True, "hidden": False,
-                         "hasMinValue": True, "hasMaxValue": True,
-                         "minValue": 0, "maxValue": 1}
+                              "hasMinValue": True, "hasMaxValue": True,
+                              "minValue": 0, "maxValue": 1}
 
         self.ensure_setup()
 
@@ -82,7 +83,7 @@ class FacialRiggingTools:
 
         return rivet_loc, uvPin_node
 
-    def rivets_per_vertex(self, object_to_rivet:str) -> pm.nt.Transform:
+    def rivets_per_vertex(self, object_to_rivet: str) -> pm.nt.Transform:
         rivet_object = pm.PyNode(object_to_rivet)
 
         rvt_grp = pm.group(name="Rivets", empty=True)
@@ -97,11 +98,11 @@ class FacialRiggingTools:
 
         return rvt_grp
 
-    def name_arbitrary_mirrored_objects(self, group_name:str, centre_variance=0.2) -> None:
+    def name_arbitrary_mirrored_objects(self, group_name: str, centre_variance=0.2) -> None:
         group = pm.PyNode(group_name)
         for object in group.getChildren():
             worldspace_translate = pm.xform(object, translation=True, worldSpace=True, query=True)
-            lcr = "l" if worldspace_translate[0] >=  centre_variance else "c"
+            lcr = "l" if worldspace_translate[0] >= centre_variance else "c"
             lcr = lcr if worldspace_translate[0] >= -centre_variance else "r"
 
             object.rename(f"{lcr}_{object.name()}")
@@ -123,7 +124,7 @@ class FacialRiggingTools:
 
         return None
 
-    def joint_per_rivet(self, rivet_group:str) -> None:
+    def joint_per_rivet(self, rivet_group: str) -> None:
         rvt_grp = pm.PyNode(rivet_group)
 
         jnt_grp = pm.group(name="Joints", empty=True)
@@ -139,7 +140,7 @@ class FacialRiggingTools:
 
         return None
 
-    def ctl_create(self, shape:str, name:str) -> [pm.nt.Transform, pm.nt.Transform]:
+    def ctl_create(self, shape: str, name: str) -> [pm.nt.Transform, pm.nt.Transform]:
 
         pm.select(deselect=True)
 
@@ -166,7 +167,7 @@ class FacialRiggingTools:
 
         return grp, ctl
 
-    def normalized_invert_floatmath_node(self, side:str, prefix:str, input_node:str, input_att:str) -> str:
+    def normalized_invert_floatmath_node(self, side: str, prefix: str, input_node: str, input_att: str) -> str:
         inv_node = pm.createNode("floatMath", name=f"eyelid_{prefix}_{side}_invert")
         pm.connectAttr(f"{input_node}.{input_att}", inv_node.floatB)
         inv_node.operation.set(1)
@@ -174,7 +175,7 @@ class FacialRiggingTools:
 
         return inv_node_name
 
-    def eye_rig(self, side:str, eye_loc:str) -> classmethod:
+    def eye_rig(self, side: str, eye_loc: str) -> classmethod:
         eye_loc = pm.PyNode(eye_loc)
         eye_loc_pos = eye_loc.t.get()
         head_jnt = pm.PyNode(self.head_jnt)
@@ -195,9 +196,9 @@ class FacialRiggingTools:
         pm.xform(upper_jnt, translation=eye_loc_pos, worldSpace=True)
         pm.select(deselect=True)
 
-        eye_grp, eye_ctl  = self.ctl_create(shape="circle", name=f"eye_{side}")
+        eye_grp, eye_ctl = self.ctl_create(shape="circle", name=f"eye_{side}")
         eye_grp.t.set(eye_loc_pos)
-        pm.xform(eye_grp, translation=[0,0,40], relative=True)
+        pm.xform(eye_grp, translation=[0, 0, 40], relative=True)
         pm.select(deselect=True)
 
         eye_attributes = []
@@ -210,7 +211,7 @@ class FacialRiggingTools:
         for u_l in ["Lower", "Upper"]:
             # EYELID FOLLOW SETUP
             eye_follow_invfm = self.normalized_invert_floatmath_node(side=side, prefix=f"{u_l}_Follow",
-                                                                 input_node=eye_ctl, input_att=f"{side}_Eyelid_Follow")
+                                                                     input_node=eye_ctl, input_att=f"{side}_Eyelid_Follow")
             eye_follow_invfm = pm.PyNode(eye_follow_invfm)
 
             eye_follow_abnar = pm.createNode("animBlendNodeAdditiveRotation", name=f"eyelid_follow_{side}_abnar")
@@ -223,8 +224,8 @@ class FacialRiggingTools:
 
             # EYELID CLOSE SETUP
             eye_close_invfm = self.normalized_invert_floatmath_node(side=side, prefix=f"{u_l}_Close",
-                                                                     input_node=eye_ctl,
-                                                                     input_att=f"{side}_Eyelid_{u_l}")
+                                                                    input_node=eye_ctl,
+                                                                    input_att=f"{side}_Eyelid_{u_l}")
             eye_close_invfm = pm.PyNode(eye_close_invfm)
 
             eye_close_abnar = pm.createNode("animBlendNodeAdditiveRotation", name=f"eyelid_close_{side}_abnar")
@@ -248,7 +249,7 @@ class FacialRiggingTools:
 
         # END NODE SETUP
 
-        pm.aimConstraint(eye_ctl, main_jnt, worldUpType="objectrotation", worldUpObject=head_jnt, aimVector=[0,0,1])
+        pm.aimConstraint(eye_ctl, main_jnt, worldUpType="objectrotation", worldUpObject=head_jnt, aimVector=[0, 0, 1])
 
         # return eye_ctl
         class eye_rig:
@@ -259,7 +260,7 @@ class FacialRiggingTools:
 
         return eye_rig(eye_ctl, eye_grp, eye_attributes)
 
-    def eye_runner(self, eyes:list, sides:list) -> None:
+    def eye_runner(self, eyes: list, sides: list) -> None:
         eyeMain_grp, eyeMain_ctl = self.ctl_create(shape="square", name="eyesMain")
 
         # Creating an attribute for the Follow attr on the individual controls, as well as the main control
@@ -284,7 +285,7 @@ class FacialRiggingTools:
         x = [pm.xform(x, ws=True, t=True, query=True)[0] for x in eye_ctls]
         y = [pm.xform(y, ws=True, t=True, query=True)[1] for y in eye_ctls]
         z = [pm.xform(z, ws=True, t=True, query=True)[2] for z in eye_ctls]
-        eye_ctls_pos = [sum(x)/eye_ctl_count, sum(y)/eye_ctl_count, sum(z)/eye_ctl_count]
+        eye_ctls_pos = [sum(x) / eye_ctl_count, sum(y) / eye_ctl_count, sum(z) / eye_ctl_count]
         eyeMain_grp.t.set(eye_ctls_pos)
 
         for grp in eye_grps:
@@ -294,7 +295,7 @@ class FacialRiggingTools:
 
         return None
 
-    def mouth_rig(self, jaw_loc:str, ends:list, sides:list, front_c_loc:str) -> None:
+    def mouth_rig(self, jaw_loc: str, ends: list, sides: list, front_c_loc: str) -> None:
         head_jnt = pm.PyNode(self.head_jnt)
         jaw_loc = pm.PyNode(jaw_loc)
         jaw_loc_pos = jaw_loc.t.get()
@@ -358,6 +359,7 @@ class FacialRiggingTools:
 
     def eyebrow_rig(self) -> None:
         pass
+
 
 """
 from Rigging import FacialRiggingTools
