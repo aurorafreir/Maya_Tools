@@ -1,5 +1,5 @@
 """
-
+the normal cmds.Rivet doesn't take any inputs or spit out any results, this is a (partial) rewrite
 """
 # SYSTEM IMPORTS
 
