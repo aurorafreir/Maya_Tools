@@ -9,8 +9,8 @@ global proc shelf_Aury_Tooling () {
         -flexibleWidthType 3
         -flexibleWidthValue 32
         -enable 1
-        -width 33
-        -height 32
+        -width 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -25,6 +25,7 @@ global proc shelf_Aury_Tooling () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+        -font "plainLabelFont" 
         -imageOverlayLabel "Rig >" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
@@ -44,7 +45,7 @@ global proc shelf_Aury_Tooling () {
         -flexibleWidthValue 32
         -enable 1
         -width 39
-        -height 32
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -59,6 +60,7 @@ global proc shelf_Aury_Tooling () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+        -font "plainLabelFont" 
         -imageOverlayLabel "Rivet" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
@@ -77,8 +79,8 @@ global proc shelf_Aury_Tooling () {
         -flexibleWidthType 3
         -flexibleWidthValue 32
         -enable 1
-        -width 33
-        -height 32
+        -width 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -93,6 +95,7 @@ global proc shelf_Aury_Tooling () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+        -font "plainLabelFont" 
         -imageOverlayLabel "Rendr >" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
@@ -111,8 +114,8 @@ global proc shelf_Aury_Tooling () {
         -flexibleWidthType 3
         -flexibleWidthValue 32
         -enable 1
-        -width 33
-        -height 32
+        -width 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -127,6 +130,7 @@ global proc shelf_Aury_Tooling () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+        -font "plainLabelFont" 
         -imageOverlayLabel "ai shader" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
@@ -145,8 +149,43 @@ global proc shelf_Aury_Tooling () {
         -flexibleWidthType 3
         -flexibleWidthValue 32
         -enable 1
-        -width 33
-        -height 32
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Set ,odel render settings" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Set Model Attrs" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "model attrs" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "from scripts.rendering_utils import SetRenderSettings as SRS\n#from importlib import reload\n#reload(SRS)\nSRS.model_attrs_setter()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -161,6 +200,7 @@ global proc shelf_Aury_Tooling () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+        -font "plainLabelFont" 
         -imageOverlayLabel "Pipe >" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
@@ -180,7 +220,7 @@ global proc shelf_Aury_Tooling () {
         -flexibleWidthValue 32
         -enable 1
         -width 39
-        -height 32
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -195,6 +235,7 @@ global proc shelf_Aury_Tooling () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+        -font "plainLabelFont" 
         -imageOverlayLabel "SkelCon" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
@@ -214,7 +255,7 @@ global proc shelf_Aury_Tooling () {
         -flexibleWidthValue 32
         -enable 1
         -width 39
-        -height 32
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -229,6 +270,7 @@ global proc shelf_Aury_Tooling () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+        -font "plainLabelFont" 
         -imageOverlayLabel "refdup" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
@@ -247,8 +289,8 @@ global proc shelf_Aury_Tooling () {
         -flexibleWidthType 3
         -flexibleWidthValue 32
         -enable 1
-        -width 33
-        -height 32
+        -width 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -263,6 +305,7 @@ global proc shelf_Aury_Tooling () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+        -font "plainLabelFont" 
         -imageOverlayLabel "ngskin" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
@@ -281,8 +324,8 @@ global proc shelf_Aury_Tooling () {
         -flexibleWidthType 3
         -flexibleWidthValue 32
         -enable 1
-        -width 33
-        -height 32
+        -width 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -297,6 +340,7 @@ global proc shelf_Aury_Tooling () {
         -flipX 0
         -flipY 0
         -useAlpha 1
+        -font "plainLabelFont" 
         -imageOverlayLabel "ex skin" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
@@ -315,8 +359,8 @@ global proc shelf_Aury_Tooling () {
         -flexibleWidthType 3
         -flexibleWidthValue 32
         -enable 1
-        -width 33
-        -height 32
+        -width 35
+        -height 34
         -manage 1
         -visible 1
         -preventOverride 0
@@ -325,12 +369,13 @@ global proc shelf_Aury_Tooling () {
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "from scripts.rigging_utils import skin_utils\n\nskin_utils.import_..." 
+        -label "Import Skin" 
         -labelOffset 0
         -rotation 0
         -flipX 0
         -flipY 0
         -useAlpha 1
+        -font "plainLabelFont" 
         -imageOverlayLabel "im skin" 
         -overlayLabelColor 0.8 0.8 0.8 
         -overlayLabelBackColor 0 0 0 0.5 
