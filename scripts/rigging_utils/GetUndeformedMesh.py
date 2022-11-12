@@ -20,7 +20,7 @@ def get_undeformed_mesh():
         selected_obj = cmds.ls(selection=True, dag=True, shape=True)[0]
         shade_eng = cmds.listConnections(selected_obj , type="shadingEngine")
         selected_obj_material = cmds.ls(cmds.listConnections(shade_eng), materials=True)
-        print selected_obj_material[0]
+        print(selected_obj_material[0])
     # duplicate object and switch it to original shape node
         cmds.duplicate(name="{}Blendshape".format(selected_obj))
         cmds.setAttr("{}BlendshapeShapeOrig.intermediateObject".format(selected_obj), 0)
@@ -29,7 +29,7 @@ def get_undeformed_mesh():
         cmds.select('{}Blendshape'.format(selected_obj[0]))
         cmds.select(selected_obj_material[0], add=True)
         selected_obj_shadergroup = cmds.listConnections(selected_obj_material[0])
-        print selected_obj_shadergroup[0]
+        print(selected_obj_shadergroup[0])
         cmds.hyperShade( assign='aiStandardSurface1SG')
     # unlock translate attrs
         axis = ['X', 'Y', 'Z']
@@ -37,5 +37,5 @@ def get_undeformed_mesh():
         for ax in axis:
             for attr in attrs:
                cmds.setAttr('{}Blendshape.{}{}'.format(selected_obj, attr, ax), lock=True)
-
-get_undeformed_mesh()
+    else:
+        print("Nothing selected!")
