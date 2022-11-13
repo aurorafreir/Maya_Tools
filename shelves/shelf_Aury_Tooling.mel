@@ -86,7 +86,7 @@ global proc shelf_Aury_Tooling () {
         -backgroundColor 0 0 0 
         -highlightColor 0.321569 0.521569 0.65098 
         -align "center" 
-        -label "from scripts.rigging_utils import GetUndeformedMesh as GUM\nfrom ..." 
+        -label "Get Undeformed Mesh " 
         -labelOffset 0
         -rotation 0
         -flipX 0
@@ -101,6 +101,74 @@ global proc shelf_Aury_Tooling () {
         -marginWidth 1
         -marginHeight 1
         -command "from scripts.rigging_utils import GetUndeformedMesh as GUM\nfrom importlib import reload\nreload(GUM)\nGUM.get_undeformed_mesh()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 33
+        -height 32
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "from scripts.rigging_utils import extract_skeleton\nfrom importlib import reload\nreload(extract_skeleton)\nextract_skeleton.extract_skeleton()" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Skeleton export" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -imageOverlayLabel "skelex" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "from scripts.rigging_utils import extract_skeleton\nfrom importlib import reload\nreload(extract_skeleton)\nextract_skeleton.extract_skeleton()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 33
+        -height 32
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Export all data" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Data files export" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -imageOverlayLabel "dataex" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "from scripts.rigging_utils import io\n\nfrom importlib import reload\nreload(io)\n\nio.data_dump()" 
         -sourceType "python" 
         -commandRepeatable 1
         -flat 1
