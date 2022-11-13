@@ -21,6 +21,10 @@ def extract_skeleton() -> None:
         new_skinned_joints = [i for i in skinned_joints if i not in scene_skinned_joints]
         scene_skinned_joints.extend(new_skinned_joints)
 
+    # Fallback for if this is run in a guides scene without skinned joints
+    if not scene_skinned_joints:
+        scene_skinned_joints = [i for i in pm.listRelatives("rig", children=True, allDescendents=True, type="joint") if i.visibility.get()]
+
     for jnt in scene_skinned_joints:
         parent_is_joint = True if type(jnt.getParent()) == pm.nt.Joint else False
         incoming_attrs = jnt.listConnections(plugs=True, source=True)
