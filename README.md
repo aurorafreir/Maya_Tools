@@ -24,6 +24,7 @@ To get this whole project, as well as both submodules, run these `git` commands
 
 ```
 git clone --recurse-submodules --remote-submodules -j8 https://github.com/CatAndDogSoup/Maya_Tools.git
+cd Maya_Tools
 git submodule update --remote --merge
 ```
 
